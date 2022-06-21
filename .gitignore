@@ -63,3 +63,6 @@ target/
 
 # Vim swapfiles
 .*.sw?
+
+# Generated version file
+tdotdat/_version.py
