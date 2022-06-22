@@ -27,14 +27,14 @@ def _(x):
 # Rate limiting
 # =============
 #: Storage for ratelimiter.
-RATELIMIT_STORAGE_URL = 'redis://localhost:6379/3'
+RATELIMIT_STORAGE_URL = "redis://localhost:6379/3"
 
 # I18N
 # ====
 #: Default language
-BABEL_DEFAULT_LANGUAGE = 'en'
+BABEL_DEFAULT_LANGUAGE = "en"
 #: Default time zone
-BABEL_DEFAULT_TIMEZONE = 'Europe/Zurich'
+BABEL_DEFAULT_TIMEZONE = "Europe/London"
 #: Other supported languages (do not include the default language in list).
 I18N_LANGUAGES = [
     # ('fr', _('French'))
@@ -43,28 +43,28 @@ I18N_LANGUAGES = [
 # Base templates
 # ==============
 #: Global base template.
-BASE_TEMPLATE = 'invenio_theme/page.html'
+BASE_TEMPLATE = "invenio_theme/page.html"
 #: Cover page base template (used for e.g. login/sign-up).
-COVER_TEMPLATE = 'invenio_theme/page_cover.html'
+COVER_TEMPLATE = "invenio_theme/page_cover.html"
 #: Footer base template.
-FOOTER_TEMPLATE = 'invenio_theme/footer.html'
+FOOTER_TEMPLATE = "invenio_theme/footer.html"
 #: Header base template.
-HEADER_TEMPLATE = 'invenio_theme/header.html'
+HEADER_TEMPLATE = "invenio_theme/header.html"
 #: Settings base template.
-SETTINGS_TEMPLATE = 'invenio_theme/page_settings.html'
+SETTINGS_TEMPLATE = "invenio_theme/page_settings.html"
 
 # Theme configuration
 # ===================
 #: The Invenio theme.
-APP_THEME = ['semantic-ui']
+APP_THEME = ["semantic-ui"]
 #: Site name.
-THEME_SITENAME = _('TDotDat')
+THEME_SITENAME = _("TDotDat")
 #: Use default frontpage.
 THEME_FRONTPAGE = True
 #: Frontpage title.
-THEME_FRONTPAGE_TITLE = _('TDotDat')
+THEME_FRONTPAGE_TITLE = _("TDotDat")
 #: Frontpage template.
-THEME_FRONTPAGE_TEMPLATE = 'tdotdat/frontpage.html'
+THEME_FRONTPAGE_TEMPLATE = "tdotdat/frontpage.html"
 
 # Email configuration
 # ===================
@@ -76,17 +76,16 @@ MAIL_SUPPRESS_SEND = True
 # Assets
 # ======
 #: Static files collection method (defaults to copying files).
-COLLECT_STORAGE = 'flask_collect.storage.file'
+COLLECT_STORAGE = "flask_collect.storage.file"
 
 # Accounts
 # ========
 #: Email address used as sender of account registration emails.
 SECURITY_EMAIL_SENDER = SUPPORT_EMAIL
 #: Email subject for account registration emails.
-SECURITY_EMAIL_SUBJECT_REGISTER = _(
-    "Welcome to TDotDat!")
+SECURITY_EMAIL_SUBJECT_REGISTER = _("Welcome to TDotDat!")
 #: Redis session storage URL.
-ACCOUNTS_SESSION_REDIS_URL = 'redis://localhost:6379/1'
+ACCOUNTS_SESSION_REDIS_URL = "redis://localhost:6379/1"
 #: Enable session/user id request tracing. This feature will add X-Session-ID
 #: and X-User-ID headers to HTTP response. You MUST ensure that NGINX (or other
 #: proxies) removes these headers again before sending the response to the
@@ -96,33 +95,32 @@ ACCOUNTS_USERINFO_HEADERS = True
 # Celery configuration
 # ====================
 
-BROKER_URL = 'amqp://guest:guest@localhost:5672/'
+BROKER_URL = "amqp://guest:guest@localhost:5672/"
 #: URL of message broker for Celery (default is RabbitMQ).
-CELERY_BROKER_URL = 'amqp://guest:guest@localhost:5672/'
+CELERY_BROKER_URL = "amqp://guest:guest@localhost:5672/"
 #: URL of backend for result storage (default is Redis).
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/2'
+CELERY_RESULT_BACKEND = "redis://localhost:6379/2"
 #: Scheduled tasks configuration (aka cronjobs).
 CELERY_BEAT_SCHEDULE = {
-    'indexer': {
-        'task': 'invenio_indexer.tasks.process_bulk_queue',
-        'schedule': timedelta(minutes=5),
+    "indexer": {
+        "task": "invenio_indexer.tasks.process_bulk_queue",
+        "schedule": timedelta(minutes=5),
     },
-    'accounts': {
-        'task': 'invenio_accounts.tasks.clean_session_table',
-        'schedule': timedelta(minutes=60),
+    "accounts": {
+        "task": "invenio_accounts.tasks.clean_session_table",
+        "schedule": timedelta(minutes=60),
     },
 }
 
 # Database
 # ========
 #: Database URI including user and password
-SQLALCHEMY_DATABASE_URI = \
-    'postgresql+psycopg2://tdotdat:tdotdat@localhost/tdotdat'
+SQLALCHEMY_DATABASE_URI = "postgresql+psycopg2://tdotdat:tdotdat@localhost/tdotdat"
 
 # JSONSchemas
 # ===========
 #: Hostname used in URLs for local JSONSchemas.
-JSONSCHEMAS_HOST = 'tdotdat.com'
+JSONSCHEMAS_HOST = "tdotdat.com"
 
 # Flask configuration
 # ===================
@@ -131,28 +129,28 @@ JSONSCHEMAS_HOST = 'tdotdat.com'
 
 #: Secret key - each installation (dev, production, ...) needs a separate key.
 #: It should be changed before deploying.
-SECRET_KEY = 'CHANGE_ME'
+SECRET_KEY = "CHANGE_ME"
 #: Max upload size for form data via application/mulitpart-formdata.
 MAX_CONTENT_LENGTH = 100 * 1024 * 1024  # 100 MiB
 #: Sets cookie with the secure flag by default
 SESSION_COOKIE_SECURE = True
 #: Sets cookie with the samesite flag to 'Strict' by default. Possible values
 #: are 'Strict', 'Lax' or None to disable it.
-SESSION_COOKIE_SAMESITE = 'Strict'
+SESSION_COOKIE_SAMESITE = "Strict"
 #: Since HAProxy and Nginx route all requests no matter the host header
 #: provided, the allowed hosts variable is set to localhost. In production it
 #: should be set to the correct host and it is strongly recommended to only
 #: route correct hosts to the application.
-APP_ALLOWED_HOSTS = ['tdotdat.com', 'localhost', '127.0.0.1']
+APP_ALLOWED_HOSTS = ["tdotdat.com", "localhost", "127.0.0.1"]
 
 # OAI-PMH
 # =======
-OAISERVER_ID_PREFIX = 'oai:tdotdat.com:'
+OAISERVER_ID_PREFIX = "oai:tdotdat.com:"
 
 # Previewers
 # ==========
 #: Include IIIF preview for images.
-PREVIEWER_PREFERENCE = ['iiif_image'] + BASE_PREFERENCE
+PREVIEWER_PREFERENCE = ["iiif_image"] + BASE_PREFERENCE
 
 # Debug
 # =====
@@ -165,9 +163,9 @@ DEBUG_TB_INTERCEPT_REDIRECTS = False
 
 # Configures Content Security Policy for PDF Previewer
 # Remove it if you are not using PDF Previewer
-APP_DEFAULT_SECURE_HEADERS['content_security_policy'] = {
-    'default-src': ["'self'", "'unsafe-inline'"],
-    'object-src': ["'none'"],
-    'style-src': ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
-    'font-src': ["'self'", "data:", "https://fonts.gstatic.com"],
+APP_DEFAULT_SECURE_HEADERS["content_security_policy"] = {
+    "default-src": ["'self'", "'unsafe-inline'"],
+    "object-src": ["'none'"],
+    "style-src": ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+    "font-src": ["'self'", "data:", "https://fonts.gstatic.com"],
 }
