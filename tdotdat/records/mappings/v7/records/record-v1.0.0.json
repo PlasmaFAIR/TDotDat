@@ -57,6 +57,20 @@
       },
       "_updated": {
         "type": "date"
+            },
+            "software": {
+                "type": "object",
+                "properties": {
+                    "name": {"type": "text"},
+                    "version": {"type": "text"}
+                }
+            },
+            "inputs": {
+                "type": "object",
+                "properties": {
+                    "temperature": {"type": "double"},
+                    "temperature_gradient": {"type": "double"}
+                }
       }
     }
   }

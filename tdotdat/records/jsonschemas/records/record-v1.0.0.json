@@ -13,7 +13,40 @@
       "description": "UUID of the deposit bucket.",
       "type": "string"
     },
-    "_files": {
+        "_input_files": {
+            "description": "Describe information needed for files in records.",
+            "type": "array",
+            "items": {
+                "description": "Describes the information of a single file in the record.",
+                "properties": {
+                    "key": {
+                        "description": "Key (filename) of the file.",
+                        "type": "string"
+                    },
+                    "file_id": {
+                        "description": "UUID of the FileInstance object.",
+                        "type": "string"
+                    },
+                    "bucket": {
+                        "description": "UUID of the bucket to which this file is assigned.",
+                        "type": "string"
+                    },
+                    "checksum": {
+                        "description": "Checksum the file. Starts with '<algorithm>:' prefix, e.g.: 'md5:1234abcd...'",
+                        "type": "string"
+                    },
+                    "size": {
+                        "description": "Size of the file in bytes.",
+                        "type": "integer"
+                    },
+                    "version_id": {
+                        "description": "UUID of the ObjectVersion object.",
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "_output_files": {
       "description": "Describe information needed for files in records.",
       "type": "array",
       "items": {
@@ -121,7 +154,47 @@
         "required": [
           "name"
         ]
-
+            }
+        },
+        "software": {
+            "description": "The software that generated this output",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "version": {
+                    "type": "string"
+                }
+            }
+        },
+        "inputs": {
+            "description": "Code inputs",
+            "type": "object",
+            "properties": {
+                "temperature": {
+                    "type": "number"
+                },
+                "temperature_gradient": {
+                    "type": "number"
+                }
+            }
+        },
+        "outputs": {
+            "type": "object",
+            "properties": {
+                "flux": {
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
+                },
+                "wavenumber": {
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
+                }
       }
     }
   },

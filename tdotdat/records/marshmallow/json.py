@@ -9,8 +9,12 @@
 
 from invenio_jsonschemas import current_jsonschemas
 from invenio_records_rest.schemas import Nested, StrictKeysMixin
-from invenio_records_rest.schemas.fields import DateString, GenFunction, \
-    PersistentIdentifier, SanitizedUnicode
+from invenio_records_rest.schemas.fields import (
+    DateString,
+    GenFunction,
+    PersistentIdentifier,
+    SanitizedUnicode,
+)
 from marshmallow import fields, missing, validate
 
 from tdotdat.records.api import Record
@@ -18,23 +22,28 @@ from tdotdat.records.api import Record
 
 def bucket_from_context(_, context):
     """Get the record's bucket from context."""
-    record = (context or {}).get('record', {})
-    return record.get('_bucket', missing)
+    record = (context or {}).get("record", {})
+    return record.get("_bucket", missing)
 
 
-def files_from_context(_, context):
+def files_from_context(context, file_type: str):
     """Get the record's files from context."""
-    record = (context or {}).get('record', {})
-    return record.get('_files', missing)
+    record = (context or {}).get("record", {})
+    return record.get(f"_{file_type}_files", missing)
+
+
+def input_files_from_context(_, context):
+    return files_from_context(context, "input")
+
+
+def output_files_from_context(_, context):
+    return files_from_context(context, "output")
 
 
 def schema_from_context(_, context):
     """Get the record's schema from context."""
-    record = (context or {}).get('record', {})
-    return record.get(
-        "_schema",
-        current_jsonschemas.path_to_url(Record._schema)
-    )
+    record = (context or {}).get("record", {})
+    return record.get("_schema", current_jsonschemas.path_to_url(Record._schema))
 
 
 class PersonIdsSchemaV1(StrictKeysMixin):
@@ -54,6 +63,21 @@ class ContributorSchemaV1(StrictKeysMixin):
     email = fields.Email()
 
 
+class SoftwareSchemaV1(StrictKeysMixin):
+    name = SanitizedUnicode(required=True)
+    version = SanitizedUnicode()
+
+
+class InputsSchemaV1(StrictKeysMixin):
+    temperature = fields.Number()
+    temperature_gradient = fields.Number()
+
+
+class OutputsSchemaV1(StrictKeysMixin):
+    flux = fields.List(fields.Number())
+    wavenumber = fields.List(fields.Number())
+
+
 class MetadataSchemaV1(StrictKeysMixin):
     """Schema for the record metadata."""
 
@@ -62,6 +86,9 @@ class MetadataSchemaV1(StrictKeysMixin):
     keywords = fields.List(SanitizedUnicode(), many=True)
     publication_date = DateString()
     contributors = Nested(ContributorSchemaV1, many=True, required=True)
+    software = Nested(SoftwareSchemaV1)
+    inputs = Nested(InputsSchemaV1)
+    outputs = Nested(OutputsSchemaV1)
     _schema = GenFunction(
         attribute="$schema",
         data_key="$schema",
@@ -78,5 +105,9 @@ class RecordSchemaV1(StrictKeysMixin):
     updated = fields.Str(dump_only=True)
     links = fields.Dict(dump_only=True)
     id = PersistentIdentifier()
-    files = GenFunction(
-        serialize=files_from_context, deserialize=files_from_context)
+    input_files = GenFunction(
+        serialize=input_files_from_context, deserialize=input_files_from_context
+    )
+    output_files = GenFunction(
+        serialize=output_files_from_context, deserialize=output_files_from_context
+    )
