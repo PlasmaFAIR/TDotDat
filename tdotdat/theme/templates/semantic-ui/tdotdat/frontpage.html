@@ -9,8 +9,22 @@
 
 {% block page_body %}
 <div class="ui container grid">
+  <div class="row"></div>
   <div class="row">
     <div class="column"><h1 id="frontpage-h1" class="ui header centered">Welcome to TDotDat.</h1></div>
+  </div>
+</div>
+
+<div class="ui container grid">
+  <div class="row"></div>
+  <div class="row">
+    <div class="column">
+      <div class"ui message">
+        <h2 class="ui header">Let's get started</h2>
+        <p>Upload a new gyrokinetic simulation</p>
+        <a href="{{ url_for('deposit.create') }}" class="ui primary button">Create upload</a>
+      </div>
+    </div>
   </div>
 </div>
 {% endblock %}
