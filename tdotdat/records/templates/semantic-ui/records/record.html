@@ -10,32 +10,28 @@
 {% from 'invenio_previewer/macros.html' import file_list, preview_file %}
 
 {%- macro record_content(data) %}
-  {% set ignore_list = ['_bucket', '$schema'] %}
+  {% set ignore_list = ['_bucket', '$schema', '_files'] %}
+  <div class="ui segments">
   {% for key, value in data.items() if key not in ignore_list recursive %}
-    <li class="list-group-item">
+    <div class="ui segment for-loop">
     {% if value is mapping %}
         <strong>{{ key }}:</strong>
-        <ul class="list-group">{{ loop(value.items()) }}</ul>
+        <div class="ui segments mapping-bit">{{ loop(value.items()) }}</div>
     {% elif value is iterable and value is not string %}
         <strong>{{ key }}:</strong>
-        <ol>
         {% for item in value %}
-          <li>
           {% if item is mapping %}
-            <ul class="list-group">
               {{ record_content(item) }}
-            </ul>
-          {% else %}
-            {{ item }}
-          {% endif %}
-          </li>
+            {% else %}
+              {{ item }}
+            {% endif %}
         {% endfor %}
-        </ol>
     {% else %}
-      <strong>{{ key }}:</strong> {{ value }}
+        <strong>{{ key }}:</strong> {{ value }}
     {% endif %}
-    </li>
+  </div>
   {% endfor %}
+  </div>
 {%- endmacro %}
 
 {% macro preview(files) %}
@@ -57,18 +53,19 @@
 {%- endmacro %}
 
 {%- block page_body %}
-  <div class="ui container">
-    <h2>{{record.title}}</h2>
-    <div class="panel panel-default">
-      <ul class="list-group">
+  <div class="ui grid container">
+    <div class="row"></div>
+    <div class="row">
+      <div class="column">
+        <h2 class="ui header">{{record.title}}</h2>
         {{ record_content(record) }}
-      </ul>
+        {% set files = record._files %}
+        {{ preview(files) }}
+        {%- if files -%}
+          {{ file_list(files, pid) }}
+        {%- endif %}
+      </div>
     </div>
-    {% set files = record._files %}
-    {{ preview(files) }}
-    {%- if files -%}
-      {{ file_list(files, pid) }}
-    {%- endif %}
   </div>
   {{ webpack['tdotdat-preview.js'] }}
 {%- endblock %}
