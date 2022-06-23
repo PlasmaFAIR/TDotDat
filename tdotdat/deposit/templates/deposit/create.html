@@ -1,0 +1,67 @@
+{%- extends config.BASE_TEMPLATE %}
+
+{% macro errors(field) %}
+  {% if field.errors %}
+    <div class="ui error message small">
+      <div class="header">Invalid input</div>
+      <ul>
+        {% for error in field.errors %}
+          <li>{{ error }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% endif %}
+</span>
+{% endmacro %}
+
+{% block page_body %}
+  <div class="ui grid container stackable">
+    <div class="row"></div>
+    <div class="row">
+      <div class="column">
+        <h2 class="ui large header">Create record</h2>
+      </div>
+    </div>
+    <div class="row">
+      <div class="three wide column"></div>
+      <div class="six wide column">
+        <form action="{{ url_for('deposit.create') }}" method="POST" class="ui form {{ 'error' if form.title.errors }}">
+          <div class="field {{ 'has-error' if form.title.errors }}">
+            <label for="title">{{ form.title.label }}</label>
+            {{ form.title|safe }}
+            {{ errors(form.title) }}
+          </div>
+          <div class="field {{ 'has-error' if form.contributor_name.errors }}">
+            <label for="contributor_name">{{ form.contributor_name.label }}</label>
+            {{ form.contributor_name|safe }}
+            {{ errors(form.contributor_name) }}
+          </div>
+          <div class="field {{ 'has-error' if form.keywords.errors }}">
+            <label for="keywords">{{ form.keywords.label }}</label>
+            {{ form.keywords|safe }}
+            {{ errors(form.keywords) }}
+          </div>
+          <div class="field {{ 'has-error' if form.software.errors }}">
+            <label for="software">{{ form.software.label }}</label>
+            {{ form.software|safe }}
+            {{ errors(form.software) }}
+          </div>
+          <div class="field {{ 'has-error' if form.input_file.errors }}">
+            <label for="input_file">{{ form.input_file.label }}</label>
+            {{ form.input_file|safe }}
+            {{ errors(form.input_file) }}
+          </div>
+          <div class="field {{ 'has-error' if form.output_file.errors }}">
+            <label for="output_file">{{ form.output_file.label }}</label>
+            {{ form.output_file|safe }}
+            {{ errors(form.output_file) }}
+          </div>
+
+          {{ form.csrf_token }}
+          {{ errors(form.csrf_token) }}
+          <button type="submit" class="ui primary button">Create</button>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock page_body %}
