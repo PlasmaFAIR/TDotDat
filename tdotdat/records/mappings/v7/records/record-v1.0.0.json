@@ -68,6 +68,7 @@
             "inputs": {
                 "type": "object",
                 "properties": {
+                    "files": {"type": "text"},
                     "temperature": {"type": "double"},
                     "temperature_gradient": {"type": "double"}
                 }

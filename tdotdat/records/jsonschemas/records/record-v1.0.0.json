@@ -13,40 +13,7 @@
             "description": "UUID of the deposit bucket.",
             "type": "string"
         },
-        "_input_files": {
-            "description": "Describe information needed for files in records.",
-            "type": "array",
-            "items": {
-                "description": "Describes the information of a single file in the record.",
-                "properties": {
-                    "key": {
-                        "description": "Key (filename) of the file.",
-                        "type": "string"
-                    },
-                    "file_id": {
-                        "description": "UUID of the FileInstance object.",
-                        "type": "string"
-                    },
-                    "bucket": {
-                        "description": "UUID of the bucket to which this file is assigned.",
-                        "type": "string"
-                    },
-                    "checksum": {
-                        "description": "Checksum the file. Starts with '<algorithm>:' prefix, e.g.: 'md5:1234abcd...'",
-                        "type": "string"
-                    },
-                    "size": {
-                        "description": "Size of the file in bytes.",
-                        "type": "integer"
-                    },
-                    "version_id": {
-                        "description": "UUID of the ObjectVersion object.",
-                        "type": "string"
-                    }
-                }
-            }
-        },
-        "_output_files": {
+        "_files": {
             "description": "Describe information needed for files in records.",
             "type": "array",
             "items": {
@@ -172,6 +139,13 @@
             "description": "Code inputs",
             "type": "object",
             "properties": {
+                "files": {
+                    "description": "List of input files",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
                 "temperature": {
                     "type": "number"
                 },
@@ -183,6 +157,13 @@
         "outputs": {
             "type": "object",
             "properties": {
+                "files": {
+                    "description": "List of output files",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
                 "flux": {
                     "type": "array",
                     "items": {

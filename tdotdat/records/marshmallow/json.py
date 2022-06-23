@@ -26,18 +26,10 @@ def bucket_from_context(_, context):
     return record.get("_bucket", missing)
 
 
-def files_from_context(context, file_type: str):
+def files_from_context(_, context):
     """Get the record's files from context."""
     record = (context or {}).get("record", {})
-    return record.get(f"_{file_type}_files", missing)
-
-
-def input_files_from_context(_, context):
-    return files_from_context(context, "input")
-
-
-def output_files_from_context(_, context):
-    return files_from_context(context, "output")
+    return record.get(f"_files", missing)
 
 
 def schema_from_context(_, context):
@@ -69,11 +61,13 @@ class SoftwareSchemaV1(StrictKeysMixin):
 
 
 class InputsSchemaV1(StrictKeysMixin):
+    files = fields.List(SanitizedUnicode)
     temperature = fields.Number()
     temperature_gradient = fields.Number()
 
 
 class OutputsSchemaV1(StrictKeysMixin):
+    files = fields.List(SanitizedUnicode)
     flux = fields.List(fields.Number())
     wavenumber = fields.List(fields.Number())
 
@@ -105,9 +99,4 @@ class RecordSchemaV1(StrictKeysMixin):
     updated = fields.Str(dump_only=True)
     links = fields.Dict(dump_only=True)
     id = PersistentIdentifier()
-    input_files = GenFunction(
-        serialize=input_files_from_context, deserialize=input_files_from_context
-    )
-    output_files = GenFunction(
-        serialize=output_files_from_context, deserialize=output_files_from_context
-    )
+    files = GenFunction(serialize=files_from_context, deserialize=files_from_context)

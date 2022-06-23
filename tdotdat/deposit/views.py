@@ -23,9 +23,7 @@ def create():
     if form.validate_on_submit():
         contributors = [dict(name=form.contributor_name.data)]
 
-        bucket = None
-        if form.input_file.data or form.output_file.data:
-            bucket = Bucket.create()
+        bucket = Bucket.create()
 
         inputs = {}
         if form.input_file.data:
@@ -33,31 +31,41 @@ def create():
             in_file = ObjectVersion.create(
                 bucket, input_file.filename, stream=input_file
             )
-            in_file = dict(
-                key=in_file.key,
-                file_id=str(in_file.file_id),
-                bucket=str(in_file.bucket_id),
-            )
-
             input_file.seek(0)
             input_nml = f90nml.reads(input_file.read().decode("utf-8"))
             inputs["temperature"] = input_nml["species_parameters_1"]["temp"]
             inputs["temperature_gradient"] = input_nml["species_parameters_1"]["tprim"]
+            inputs["files"] = [in_file.key]
         else:
             in_file = None
 
+        outputs = {}
         if form.output_file.data:
             output_file = request.files[form.output_file.name]
             out_file = ObjectVersion.create(
                 bucket, output_file.filename, stream=output_file
             )
+            outputs["files"] = [out_file.key]
+        else:
+            out_file = None
+
             out_file = dict(
                 key=out_file.key,
                 file_id=str(out_file.file_id),
                 bucket=str(out_file.bucket_id),
             )
-        else:
-            out_file = None
+
+        files = [
+            dict(
+                key=f.key,
+                file_id=str(f.file_id),
+                bucket=str(bucket.id),
+                size=f.file.size,
+                checksum=f.file.checksum,
+                version_id=str(f.version_id),
+            )
+            for f in ObjectVersion.get_by_bucket(bucket.id)
+        ]
 
         create_record(
             dict(
@@ -65,9 +73,9 @@ def create():
                 software={"name": form.software.data},
                 contributors=contributors,
                 inputs=inputs,
-                _bucket=str(bucket.id) if bucket else "",
-                _input_files=[in_file],
-                _output_files=[out_file],
+                outputs=outputs,
+                _bucket=str(bucket.id),
+                _files=files,
             )
         )
         return redirect(url_for("deposit.success"))
