@@ -25,7 +25,7 @@
     <div class="row">
       <div class="three wide column"></div>
       <div class="six wide column">
-        <form action="{{ url_for('deposit.create') }}" method="POST" class="ui form {{ 'error' if form.title.errors }}">
+        <form action="{{ url_for('deposit.create') }}" method="POST" class="ui form {{ 'error' if form.title.errors }}" enctype="multipart/form-data">
           <div class="field {{ 'has-error' if form.title.errors }}">
             <label for="title">{{ form.title.label }}</label>
             {{ form.title|safe }}
