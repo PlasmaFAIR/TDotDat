@@ -19,6 +19,7 @@ def _(x):
     """Identity function for string extraction."""
     return x
 
+
 RECORDS_REST_ENDPOINTS = {
     'recid': dict(
         pid_type='recid',
@@ -70,13 +71,13 @@ RECORDS_UI_ENDPOINTS = dict(
     recid_previewer=dict(
         pid_type='recid',
         route='/records/<pid_value>/preview/<path:filename>',
-        view_imp='invenio_previewer.views.preview',
+        view_imp='invenio_previewer.views:preview',
         record_class='invenio_records_files.api:Record',
     ),
     recid_files=dict(
         pid_type='recid',
         route='/records/<pid_value>/files/<path:filename>',
-        view_imp='invenio_records_files.utils.file_download_ui',
+        view_imp='tdotdat.records.views:file_download_ui',
         record_class='invenio_records_files.api:Record',
     ),
 )
