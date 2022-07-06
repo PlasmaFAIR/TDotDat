@@ -29,7 +29,7 @@ def bucket_from_context(_, context):
 def files_from_context(_, context):
     """Get the record's files from context."""
     record = (context or {}).get("record", {})
-    return record.get(f"_files", missing)
+    return record.get("_files", missing)
 
 
 def schema_from_context(_, context):
