@@ -11,6 +11,6 @@
 //
 // Use this file to provide your custom LESS variables. For example:
 
-// @brandColor      : #793e8e;
+@brandColor      : rgb(106, 115, 218);
 // @signupColor: @green;
 // @searchButtonColor: @orange;
