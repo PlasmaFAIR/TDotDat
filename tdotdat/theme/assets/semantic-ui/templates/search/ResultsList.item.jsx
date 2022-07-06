@@ -15,6 +15,7 @@ const TDotDatResultsListItem = ({ result, index }) => {
       <Item.Content>
         <Item.Header>{result.metadata.title}</Item.Header>
         <Item.Description>
+          <p>Run with <b>{result.metadata.software.name}</b></p>
           {contributors && (
             <List horizontal relaxed>
               {contributors.map((contributor, idx) => (
