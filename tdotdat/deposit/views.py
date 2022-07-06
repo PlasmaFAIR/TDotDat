@@ -2,6 +2,8 @@ from flask import Blueprint, redirect, url_for, render_template, request
 from flask_login import login_required
 from invenio_files_rest.models import ObjectVersion, Bucket
 import f90nml
+import pyrokinetics
+from tempfile import NamedTemporaryFile
 
 from .forms import RecordForm
 from .api import create_record
@@ -31,13 +33,19 @@ def create():
             in_file = ObjectVersion.create(
                 bucket, input_file.filename, stream=input_file
             )
-            input_file.seek(0)
-            input_nml = f90nml.reads(input_file.read().decode("utf-8"))
-            inputs["temperature"] = input_nml["species_parameters_1"]["temp"]
-            inputs["temperature_gradient"] = input_nml["species_parameters_1"]["tprim"]
+
+            # Note this relies on details of the file storage to get the filename
+            print(in_file.file.storage().fileurl)
+            pyro = pyrokinetics.Pyro(gk_file=in_file.file.storage().fileurl)
+
+            inputs["temperature"] = pyro.local_species["electron"].temp
+            inputs["temperature_gradient"] = pyro.local_species["electron"].a_lt
             inputs["files"] = [in_file.key]
+
+            software_name = pyro.gk_code
         else:
             in_file = None
+            software_name = form.software.data
 
         outputs = {}
         if form.output_file.data:
@@ -70,7 +78,7 @@ def create():
         create_record(
             dict(
                 title=form.title.data,
-                software={"name": form.software.data},
+                software={"name": software_name},
                 contributors=contributors,
                 inputs=inputs,
                 outputs=outputs,

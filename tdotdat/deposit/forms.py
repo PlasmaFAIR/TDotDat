@@ -8,7 +8,7 @@ class RecordForm(FlaskForm):
     keywords = StringField("keywords")
     run_date = DateField("Run date")
     contributor_name = StringField("Contributor's name", [validators.DataRequired()])
-    software = StringField("Software", [validators.DataRequired()])
+    software = StringField("Software")
 
     input_file = FileField("Input file")
     output_file = FileField("Output file")
