@@ -1,0 +1,71 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "id": "http://localhost/schemas/equilibrium/equilibrium-v1.0.0.json",
+    "additionalProperties": false,
+    "title": "Equilibrium v1.0.0",
+    "type": "object",
+    "properties": {
+        "$schema": {
+            "description": "JSONSchema for the record",
+            "type": "string"
+        },
+        "_bucket": {
+            "description": "UUID of the deposit bucket.",
+            "type": "string"
+        },
+        "_files": {
+            "description": "Describe information needed for files in records.",
+            "type": "array",
+            "items": {
+                "description": "Describes the information of a single file in the record.",
+                "properties": {
+                    "key": {
+                        "description": "Key (filename) of the file.",
+                        "type": "string"
+                    },
+                    "file_id": {
+                        "description": "UUID of the FileInstance object.",
+                        "type": "string"
+                    },
+                    "bucket": {
+                        "description": "UUID of the bucket to which this file is assigned.",
+                        "type": "string"
+                    },
+                    "checksum": {
+                        "description": "Checksum the file. Starts with '<algorithm>:' prefix, e.g.: 'md5:1234abcd...'",
+                        "type": "string"
+                    },
+                    "size": {
+                        "description": "Size of the file in bytes.",
+                        "type": "integer"
+                    },
+                    "version_id": {
+                        "description": "UUID of the ObjectVersion object.",
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "title": {
+            "description": "Record title.",
+            "type": "string"
+        },
+        "id": {
+            "description": "Invenio record identifier.",
+            "type": "string"
+        },
+        "elongation": {
+            "description": "Elongation",
+            "type": "number"
+        },
+        "q": {
+            "description": "Safety factor",
+            "type": "number"
+        },
+        "B0": {
+            "description": "Magnetic field",
+            "type": "number"
+        }
+    },
+    "required": ["id", "title", "$schema"]
+}

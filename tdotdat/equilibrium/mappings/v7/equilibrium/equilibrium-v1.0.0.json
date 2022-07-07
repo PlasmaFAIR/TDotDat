@@ -1,0 +1,37 @@
+{
+    "mappings": {
+        "date_detection": false,
+        "numeric_detection": false,
+        "properties": {
+            "$schema": {
+                "type": "text",
+                "index": false
+            },
+            "title": {
+                "type": "text",
+                "copy_to": "suggest_title"
+            },
+            "suggest_title": {
+                "type": "completion"
+            },
+            "id": {
+                "type": "keyword"
+            },
+            "_created": {
+                "type": "date"
+            },
+            "_updated": {
+                "type": "date"
+            },
+            "elongation": {
+                "type": "double"
+            },
+            "q": {
+                "type": "double"
+            },
+            "B0": {
+                "type": "double"
+            }
+        }
+    }
+}
