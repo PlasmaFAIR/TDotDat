@@ -25,33 +25,33 @@
     <div class="row">
       <div class="three wide column"></div>
       <div class="six wide column">
-        <form action="{{ url_for('deposit.create') }}" method="POST" class="ui form {{ 'error' if form.title.errors }}" enctype="multipart/form-data">
-          <div class="field {{ 'has-error' if form.title.errors }}">
+        <form action="{{ url_for('deposit.create') }}" method="POST" class="ui form {{ 'error' if form.errors }}" enctype="multipart/form-data">
+          <div class="field {{ 'error' if form.title.errors }}">
             <label for="title">{{ form.title.label }}</label>
             {{ form.title|safe }}
             {{ errors(form.title) }}
           </div>
-          <div class="field {{ 'has-error' if form.contributor_name.errors }}">
+          <div class="field {{ 'error' if form.contributor_name.errors }}">
             <label for="contributor_name">{{ form.contributor_name.label }}</label>
             {{ form.contributor_name|safe }}
             {{ errors(form.contributor_name) }}
           </div>
-          <div class="field {{ 'has-error' if form.keywords.errors }}">
+          <div class="field {{ 'error' if form.keywords.errors }}">
             <label for="keywords">{{ form.keywords.label }}</label>
             {{ form.keywords|safe }}
             {{ errors(form.keywords) }}
           </div>
-          <div class="field {{ 'has-error' if form.software.errors }}">
+          <div class="field {{ 'error' if form.software.errors }}">
             <label for="software">{{ form.software.label }}</label>
             {{ form.software|safe }}
             {{ errors(form.software) }}
           </div>
-          <div class="field {{ 'has-error' if form.input_file.errors }}">
+          <div class="field {{ 'error' if form.input_file.errors }}">
             <label for="input_file">{{ form.input_file.label }}</label>
             {{ form.input_file|safe }}
             {{ errors(form.input_file) }}
           </div>
-          <div class="field {{ 'has-error' if form.output_file.errors }}">
+          <div class="field {{ 'error' if form.output_file.errors }}">
             <label for="output_file">{{ form.output_file.label }}</label>
             {{ form.output_file|safe }}
             {{ errors(form.output_file) }}
