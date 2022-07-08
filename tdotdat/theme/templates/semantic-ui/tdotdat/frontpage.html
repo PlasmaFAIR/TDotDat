@@ -35,13 +35,22 @@
       <div class="ui message">
         <h2 class="ui header">Search equililbria</h2>
         <p>Search for an equilibrium</p>
-        <form action="{{ url_for('tdotdat_equilibrium.search') }}" class="ui form">
+        <form action="{{ url_for('equilibrium.search') }}" class="ui form">
           <div class="ui fluid action input">
             <input type="text" name="q" class="form-control"
                    placeholder="{{ _("Equilibrium name or parameter") }}">
             <button type="submit" class="ui icon search button"><i class="search icon"></i></button>
           </div>
         </form>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="column">
+      <div class="ui message">
+        <h2 class="ui header">Create a new equilibrium</h2>
+        <p>Upload a new local equilibrium</p>
+        <a href="{{ url_for('equilibrium.create') }}" class="ui primary button">Create upload</a>
       </div>
     </div>
   </div>

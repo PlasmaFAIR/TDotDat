@@ -1,0 +1,63 @@
+{%- extends config.BASE_TEMPLATE %}
+
+{% macro errors(field) %}
+  {% if field.errors %}
+    <div class="ui error message small">
+      <div class="header">Invalid input</div>
+      <ul>
+        {% for error in field.errors %}
+          <li>{{ error }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% endif %}
+</span>
+{% endmacro %}
+
+{% macro inputfor(field) %}
+  <div class="field {{ 'error' if field.errors }}">
+    <label>{{ field.label }}</label>
+    {{ field|safe }}
+    {{ errors(field) }}
+  </div>
+{% endmacro %}
+
+
+{% block page_body %}
+  <div class="ui grid container stackable">
+    <div class="row"></div>
+    <div class="row">
+      <div class="column">
+        <h2 class="ui large header">Create record</h2>
+      </div>
+    </div>
+    <div class="row">
+      <div class="three wide column"></div>
+      <div class="six wide column">
+        <form
+          action="{{ url_for('equilibrium.create') }}"
+          method="POST" class="ui form {{ 'error' if form.errors }}"
+          enctype="multipart/form-data"
+          >
+          <div class="ui message">
+            {{ inputfor(form.title) }}
+          </div>
+          <p>Please either fill in data manually, or upload a GK input file. Global and non-GK files not yet supported</p>
+
+          <div class="ui message">
+            {{ inputfor(form.elongation) }}
+            {{ inputfor(form.q) }}
+            {{ inputfor(form.B0) }}
+          </div>
+          <div class="ui message">
+            {{ inputfor(form.input_file) }}
+          </div>
+
+          {{ form.csrf_token }}
+          {{ errors(form.csrf_token) }}
+          <button type="submit" class="ui primary button">Create</button>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock page_body %}
