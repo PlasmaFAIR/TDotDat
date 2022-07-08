@@ -1,9 +1,7 @@
 from flask import Blueprint, redirect, url_for, render_template, request
 from flask_login import login_required
 from invenio_files_rest.models import ObjectVersion, Bucket
-import f90nml
 import pyrokinetics
-from tempfile import NamedTemporaryFile
 
 from .forms import RecordForm
 from .api import create_record
