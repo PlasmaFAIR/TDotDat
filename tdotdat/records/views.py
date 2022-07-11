@@ -14,6 +14,7 @@ from flask import Blueprint, request, abort
 from invenio_previewer.proxies import current_previewer
 from invenio_files_rest.models import ObjectVersion
 from invenio_files_rest.views import ObjectResource
+from invenio_records_ui.views import default_view_method
 
 
 blueprint = Blueprint(
@@ -91,3 +92,18 @@ def file_download_ui(pid, record, _record_file_factory=None, **kwargs):
     return fileobj.send_file(
         kwargs.get("filename"), as_attachment=bool(request.args.get("download"))
     )
+
+
+def record_view(pid, record, template=None, **kwargs):
+    r"""Display default view, but with references replaced
+
+    Sends record_viewed signal and renders template.
+
+    :param pid: PID object.
+    :param record: Record object.
+    :param template: Template to render.
+    :param \*\*kwargs: Additional view arguments based on URL rule.
+    :returns: The rendered template.
+    """
+
+    return default_view_method(pid, record.replace_refs(), template, **kwargs)

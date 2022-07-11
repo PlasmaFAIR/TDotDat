@@ -17,6 +17,23 @@
             "id": {
                 "type": "keyword"
             },
+            "equilibrium": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "elongation": {
+                        "type": "double"
+                    },
+                    "q": {
+                        "type": "double"
+                    },
+                    "B0": {
+                        "type": "double"
+                    }
+                }
+            },
             "keywords": {
                 "type": "keyword"
             },
@@ -61,16 +78,26 @@
             "software": {
                 "type": "object",
                 "properties": {
-                    "name": {"type": "text"},
-                    "version": {"type": "text"}
+                    "name": {
+                        "type": "text"
+                    },
+                    "version": {
+                        "type": "text"
+                    }
                 }
             },
             "inputs": {
                 "type": "object",
                 "properties": {
-                    "files": {"type": "text"},
-                    "temperature": {"type": "double"},
-                    "temperature_gradient": {"type": "double"}
+                    "files": {
+                        "type": "text"
+                    },
+                    "temperature": {
+                        "type": "double"
+                    },
+                    "temperature_gradient": {
+                        "type": "double"
+                    }
                 }
             }
         }

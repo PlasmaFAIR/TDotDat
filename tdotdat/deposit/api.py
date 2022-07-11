@@ -3,7 +3,7 @@ import uuid
 from invenio_db import db
 from invenio_indexer.api import RecordIndexer
 from invenio_pidstore import current_pidstore
-from invenio_records.api import Record
+from tdotdat.records.api import Record
 
 
 def create_record(data):

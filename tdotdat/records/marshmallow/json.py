@@ -15,7 +15,7 @@ from invenio_records_rest.schemas.fields import (
     PersistentIdentifier,
     SanitizedUnicode,
 )
-from marshmallow import fields, missing, validate
+from marshmallow import fields, missing, validate, Schema, EXCLUDE
 
 from tdotdat.records.api import Record
 
@@ -83,6 +83,7 @@ class MetadataSchemaV1(StrictKeysMixin):
     software = Nested(SoftwareSchemaV1)
     inputs = Nested(InputsSchemaV1)
     outputs = Nested(OutputsSchemaV1)
+    equilibrium = fields.Dict()
     _schema = GenFunction(
         attribute="$schema",
         data_key="$schema",

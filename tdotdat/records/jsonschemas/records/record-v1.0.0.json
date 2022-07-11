@@ -54,6 +54,16 @@
             "description": "Invenio record identifier.",
             "type": "string"
         },
+        "equilibrium": {
+            "description": "Equilibrium",
+            "type": "object",
+            "properties": {
+                "$ref": {
+                    "type": "string"
+                }
+            },
+            "required": ["$ref"]
+        },
         "keywords": {
             "description": "Free text keywords.",
             "items": {

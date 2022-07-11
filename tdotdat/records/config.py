@@ -66,19 +66,20 @@ RECORDS_UI_ENDPOINTS = dict(
         pid_type='recid',
         route='/records/<pid_value>',
         template='records/record.html',
-        record_class='invenio_records_files.api:Record',
+        record_class='tdotdat.records.api:Record',
+        view_imp="tdotdat.records.views:record_view",
     ),
     recid_previewer=dict(
         pid_type='recid',
         route='/records/<pid_value>/preview/<path:filename>',
         view_imp='invenio_previewer.views:preview',
-        record_class='invenio_records_files.api:Record',
+        record_class='tdotdat.records.api:Record',
     ),
     recid_files=dict(
         pid_type='recid',
         route='/records/<pid_value>/files/<path:filename>',
         view_imp='tdotdat.records.views:file_download_ui',
-        record_class='invenio_records_files.api:Record',
+        record_class='tdotdat.records.api:Record',
     ),
 )
 """Records UI for tdotdat."""
