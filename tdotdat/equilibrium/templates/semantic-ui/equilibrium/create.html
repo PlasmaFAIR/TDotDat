@@ -16,7 +16,7 @@
 
 {% macro inputfor(field) %}
   <div class="field {{ 'error' if field.errors }}">
-    <label>{{ field.label }}</label>
+    {{ field.label }}
     {{ field|safe }}
     {{ errors(field) }}
   </div>
