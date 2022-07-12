@@ -151,14 +151,6 @@ def create():
                 bucket, output_file.filename, stream=output_file
             )
             outputs["files"] = [out_file.key]
-        else:
-            out_file = None
-
-            out_file = dict(
-                key=out_file.key,
-                file_id=str(out_file.file_id),
-                bucket=str(out_file.bucket_id),
-            )
 
         files = [
             dict(
