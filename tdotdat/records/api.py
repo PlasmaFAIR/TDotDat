@@ -15,6 +15,8 @@ from invenio_pidstore import current_pidstore
 from invenio_jsonschemas import current_jsonschemas
 from invenio_records_files.api import Record as FilesRecord
 
+from ..config import JSONSCHEMAS_HOST
+
 
 class Record(FilesRecord):
     """Custom record."""
@@ -25,10 +27,11 @@ class Record(FilesRecord):
     def create(cls, data, id_=None, **kwargs):
         data["$schema"] = current_jsonschemas.path_to_url(cls._schema)
 
-        if "equilibrium_id" in data:
+        if (equilibrium_id := data.get("equilibrium_id", None)) is not None:
             data["equilibrium"] = {
-                "$ref": f"http://tdotdat.com/resolver/equilibrium/{data['equilibrium_id']}"
+                "$ref": f"https://{JSONSCHEMAS_HOST}/api/resolver/equilibrium/{equilibrium_id}"
             }
+            del data["equilibrium_id"]
 
         return super().create(data, id_=id_, **kwargs)
 

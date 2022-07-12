@@ -14,6 +14,14 @@
 </span>
 {% endmacro %}
 
+{% macro inputfor(field) %}
+  <div class="field {{ 'error' if field.errors }}">
+    {{ field.label }}
+    {{ field|safe }}
+    {{ errors(field) }}
+  </div>
+{% endmacro %}
+
 {% block page_body %}
   <div class="ui grid container stackable">
     <div class="row"></div>
@@ -26,35 +34,20 @@
       <div class="three wide column"></div>
       <div class="six wide column">
         <form action="{{ url_for('tdotdat_records.create') }}" method="POST" class="ui form {{ 'error' if form.errors }}" enctype="multipart/form-data">
-          <div class="field {{ 'error' if form.title.errors }}">
-            <label for="title">{{ form.title.label }}</label>
-            {{ form.title|safe }}
-            {{ errors(form.title) }}
+          <div class=" ui message">
+            {{ inputfor(form.title) }}
+            {{ inputfor(form.contributor_name) }}
+            {{ inputfor(form.keywords) }}
           </div>
-          <div class="field {{ 'error' if form.contributor_name.errors }}">
-            <label for="contributor_name">{{ form.contributor_name.label }}</label>
-            {{ form.contributor_name|safe }}
-            {{ errors(form.contributor_name) }}
+
+          <div class="ui message">
+            {{ inputfor(form.equilibrium_id) }}
           </div>
-          <div class="field {{ 'error' if form.keywords.errors }}">
-            <label for="keywords">{{ form.keywords.label }}</label>
-            {{ form.keywords|safe }}
-            {{ errors(form.keywords) }}
-          </div>
-          <div class="field {{ 'error' if form.software.errors }}">
-            <label for="software">{{ form.software.label }}</label>
-            {{ form.software|safe }}
-            {{ errors(form.software) }}
-          </div>
-          <div class="field {{ 'error' if form.input_file.errors }}">
-            <label for="input_file">{{ form.input_file.label }}</label>
-            {{ form.input_file|safe }}
-            {{ errors(form.input_file) }}
-          </div>
-          <div class="field {{ 'error' if form.output_file.errors }}">
-            <label for="output_file">{{ form.output_file.label }}</label>
-            {{ form.output_file|safe }}
-            {{ errors(form.output_file) }}
+
+          <div class="ui message">
+            {{ inputfor(form.software) }}
+            {{ inputfor(form.input_file) }}
+            {{ inputfor(form.output_file) }}
           </div>
 
           {{ form.csrf_token }}

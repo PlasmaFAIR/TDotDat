@@ -181,6 +181,7 @@ def create():
                 outputs=outputs,
                 _bucket=str(bucket.id),
                 _files=files,
+                equilibrium_id=form.equilibrium_id.data,
             )
         )
         return redirect(url_for("tdotdat_records.success"))
