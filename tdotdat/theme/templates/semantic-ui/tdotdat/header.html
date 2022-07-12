@@ -1,0 +1,19 @@
+{# -*- coding: utf-8 -*-
+
+    Copyright (C) 2022 TDoTP.
+
+    TDotDat is free software; you can redistribute it and/or modify it under
+  the terms of the MIT License; see LICENSE file for more details.
+#}
+{%- extends "invenio_theme/header.html" -%}
+
+{%- block navbar -%}
+  {{ super() }}
+  <div class="ui warning message">
+    <div class="ui centered grid">
+      <div role="alert" class="twelve center aligned column">
+        <p>This is a demonstration server, data is not backed up!</p>
+      </div>
+    </div>
+  </div>
+{%- endblock -%}

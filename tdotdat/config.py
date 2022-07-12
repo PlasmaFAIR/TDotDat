@@ -65,6 +65,8 @@ THEME_FRONTPAGE = True
 THEME_FRONTPAGE_TITLE = _("TDotDat")
 #: Frontpage template.
 THEME_FRONTPAGE_TEMPLATE = "tdotdat/frontpage.html"
+#: Header template
+THEME_HEADER_TEMPLATE = "tdotdat/header.html"
 
 # Email configuration
 # ===================
