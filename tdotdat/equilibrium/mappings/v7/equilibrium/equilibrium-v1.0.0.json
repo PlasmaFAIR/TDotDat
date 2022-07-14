@@ -14,7 +14,7 @@
             "suggest_title": {
                 "type": "completion"
             },
-            "id": {
+            "pid": {
                 "type": "keyword"
             },
             "_created": {

@@ -31,7 +31,7 @@ def schema_from_context(_, context):
 
 class EquilibriumMetadataSchemaV1(StrictKeysMixin):
 
-    id = PersistentIdentifier()
+    pid = PersistentIdentifier()
     title = SanitizedUnicode(required=True, validate=validate.Length(min=3))
     _schema = GenFunction(
         attribute="$schema",

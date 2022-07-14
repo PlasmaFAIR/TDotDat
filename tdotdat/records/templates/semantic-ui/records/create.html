@@ -41,7 +41,14 @@
           </div>
 
           <div class="ui message">
-            {{ inputfor(form.equilibrium_id) }}
+            <div id="equilibrium-selection">
+              <div class="ui fluid placeholder">
+                <div class="paragraph">
+                  <div class="line"></div>
+                  <div class="line"></div>
+                </div>
+              </div>
+            </div>
           </div>
 
           <div class="ui message">
@@ -58,3 +65,8 @@
     </div>
   </div>
 {% endblock page_body %}
+
+{%- block javascript %}
+  {{ super() }}
+  {{ webpack["tdotdat-deposit-app.js"] }}
+{%- endblock javascript %}
