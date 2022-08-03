@@ -35,7 +35,7 @@ from invenio_pidstore.errors import (
     PIDRedirectedError,
     PIDUnregistered,
 )
-from werkzeug.routing import BuildError
+from werkzeug.routing import BuildError, BaseConverter
 
 import pyrokinetics
 
@@ -57,6 +57,24 @@ The sole purpose of this blueprint is to ensure that Invenio can find the
 templates and static files located in the folders of the same names next to
 this file.
 """
+
+
+class IntListConverter(BaseConverter):
+    """Match ints separated with ','.
+
+    Adapted from https://stackoverflow.com/a/32237936/2043465
+    """
+
+    # at least one int, separated by ,, with optional trailing ,
+    regex = r"\d+(?:,\d+)*,?"
+
+    # this is used to parse the url and pass the list to the view function
+    def to_python(self, value):
+        return [int(x) for x in value.split(",")]
+
+    # this is used when building a url with url_for
+    def to_url(self, value):
+        return ",".join(str(x) for x in value)
 
 
 #
@@ -207,16 +225,14 @@ def success():
     return render_template("records/success.html")
 
 
-@blueprint.route("/compare/<pid_value_list>")
+@blueprint.route("/compare/<int_list:pid_value_list>")
 def compare(pid_value_list):
     """Display multiple records at once. Takes a comma-separated list of PIDs"""
 
     resolver = Resolver(pid_type="recid", object_type="rec", getter=Record.get_record)
 
     try:
-        record_list = [
-            resolver.resolve(pid_value) for pid_value in pid_value_list.split(",")
-        ]
+        record_list = [resolver.resolve(pid_value) for pid_value in pid_value_list]
     except (PIDDoesNotExistError, PIDUnregistered):
         abort(404)
     except PIDMissingObjectError as e:
@@ -252,16 +268,14 @@ def compare(pid_value_list):
     )
 
 
-@blueprint.route("/download/<pid_value_list>")
+@blueprint.route("/download/<int_list:pid_value_list>")
 def download(pid_value_list):
     """Download multiple records. Takes a comma-separated list of PIDs"""
 
     resolver = Resolver(pid_type="recid", object_type="rec", getter=Record.get_record)
 
     try:
-        record_list = [
-            resolver.resolve(pid_value) for pid_value in pid_value_list.split(",")
-        ]
+        record_list = [resolver.resolve(pid_value) for pid_value in pid_value_list]
     except (PIDDoesNotExistError, PIDUnregistered):
         abort(404)
     except PIDMissingObjectError as e:
