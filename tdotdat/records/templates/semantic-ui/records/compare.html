@@ -20,5 +20,14 @@ Copyright (C) 2022 TDoTP.
       </div>
     </div>
   </div>
+
+  <div class="ui grid container">
+    <a
+      class="ui primary button"
+      type="submit"
+      href="{{ url_for("tdotdat_records.download", pid_value_list=pid_value_list) }}">
+      Download all
+    </a>
+  </div>
 {% endblock page_body %}  
  
