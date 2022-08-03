@@ -1,0 +1,24 @@
+{# -*- coding: utf-8 -*-
+Copyright (C) 2022 TDoTP.
+#}
+{% extends config.RECORDS_UI_BASE_TEMPLATE %}
+
+{%- macro record_content(data) %}
+  <div class="ui segment">
+    <strong>{{ data.title }}</strong>
+  </div>
+{% endmacro %}
+
+{%- block page_body %}
+  <div class="ui grid container">
+    <div class="row"></div>
+    <div class="row">
+      <div class="column">
+        {% for _, record in record_list %}
+          {{ record_content(record) }}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+{% endblock page_body %}  
+ 

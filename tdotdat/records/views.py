@@ -10,17 +10,34 @@
 from operator import itemgetter
 from os.path import splitext
 
-from flask import Blueprint, request, abort, redirect, url_for, render_template
+from flask import (
+    Blueprint,
+    request,
+    abort,
+    redirect,
+    url_for,
+    render_template,
+    current_app,
+)
 from flask_login import login_required
 from invenio_previewer.proxies import current_previewer
 from invenio_files_rest.models import ObjectVersion, Bucket
 from invenio_files_rest.views import ObjectResource
 from invenio_records_ui.views import default_view_method
+from invenio_records_ui.signals import record_viewed
+from invenio_pidstore.resolver import Resolver
+from invenio_pidstore.errors import (
+    PIDDoesNotExistError,
+    PIDMissingObjectError,
+    PIDRedirectedError,
+    PIDUnregistered,
+)
+from werkzeug.routing import BuildError
 
 import pyrokinetics
 
 from .forms import RecordForm
-from .api import create_record
+from .api import create_record, Record
 
 
 blueprint = Blueprint(
@@ -184,3 +201,45 @@ def create():
 @login_required
 def success():
     return render_template("records/success.html")
+
+
+@blueprint.route("/compare/<pid_value_list>")
+def compare(pid_value_list):
+
+    resolver = Resolver(pid_type="recid", object_type="rec", getter=Record.get_record)
+
+    try:
+        record_list = [
+            resolver.resolve(pid_value) for pid_value in pid_value_list.split(",")
+        ]
+    except (PIDDoesNotExistError, PIDUnregistered):
+        abort(404)
+    except PIDMissingObjectError as e:
+        current_app.logger.exception(
+            "No object assigned to {0}.".format(e.pid), extra={"pid": e.pid}
+        )
+        abort(500)
+    except PIDRedirectedError as e:
+        try:
+            return redirect(
+                url_for(
+                    ".{0}".format(e.destination_pid.pid_type),
+                    pid_value=e.destination_pid.pid_value,
+                )
+            )
+        except BuildError:
+            current_app.logger.exception(
+                "Invalid redirect - pid_type '{0}' endpoint missing.".format(
+                    e.destination_pid.pid_type
+                ),
+                extra={
+                    "pid": e.pid,
+                    "destination_pid": e.destination_pid,
+                },
+            )
+            abort(500)
+
+    for pid, record in record_list:
+        record_viewed.send(current_app._get_current_object(), pid=pid, record=record)
+
+    return render_template("records/compare.html", record_list=record_list)
