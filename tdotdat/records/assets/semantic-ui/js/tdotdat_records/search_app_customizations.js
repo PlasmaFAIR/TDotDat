@@ -8,6 +8,7 @@
 import React from "react";
 import { Input, Item, List, Checkbox, Card, Form, Button, Grid } from "semantic-ui-react";
 import { SearchBar } from "react-searchkit";
+import axios from 'axios';
 
 
 export const TDotDatSearchBarElement = ({
@@ -44,8 +45,6 @@ export const TDotDatSearchBarElement = ({
 };
 
 export const TDotDatResultsListItem = ({ result, index }) => {
-  console.log("list item: ", result, index);
-
   const contributors = result.metadata.contributors || [];
 
   return (
@@ -92,4 +91,58 @@ export const TDotDatResultsGridItem = ({ result, index }) => {
       </Card.Content>
     </Card>
   );
+};
+
+export const TDotDatSearchBarContainer = () => {
+
+  // Collect all the selected records and compare them
+  const handleDownloadSelected = (event, data) => {
+    event.preventDefault();
+
+    const checkboxes = document.getElementsByName('recordResultItem');
+    const selected = Array.from(checkboxes).filter((checkbox) => checkbox.checked);
+
+    if (selected.length == 0) return;
+
+    const values = selected.map((checkbox) => checkbox.value).join(",");
+    window.location.href = "/records/compare/" + values;
+  };
+
+  // Get all the IDs for the current search
+  const getAllIds = (url, data = []) => {
+    return axios.get(url)
+      .then((response) => {
+        data.push(...response.data.hits.hits.map(hit => hit.id));
+        if (!response.data.links.next) return data;
+        return getAllIds(response.data.links.next, data);
+      })
+  };
+
+  // Get all the PIDs of the records in the search and compare them
+  const handleDownloadAll = (event, data) => {
+    event.preventDefault();
+    // Handily, the Invenio search app stores the current query state
+    // in the page url, which we can extract and use to make the same
+    // search to the REST API
+    const search_url = "/api/records/" + window.location.search;
+
+    getAllIds(search_url).then(ids => {
+      const compare_url = "/records/compare/" + ids.join(",");
+      window.location.href = compare_url;
+    });
+  };
+
+  return (
+    <Form>
+      <Grid relaxed padded>
+        <Grid.Row columns={2}>
+          <Grid.Column width={4} />
+          <Grid.Column width={8}>
+            <Button type="submit" onClick={handleDownloadAll} primary>Compare all</Button>
+            <Button type="submit" onClick={handleDownloadSelected} secondary>Compare selected</Button>
+          </Grid.Column>
+        </Grid.Row>
+      </Grid>
+    </Form>
+  )
 };
