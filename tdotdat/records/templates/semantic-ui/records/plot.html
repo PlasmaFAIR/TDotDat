@@ -1,0 +1,30 @@
+{# -*- coding: utf-8 -*-
+Copyright (C) 2022 TDoTP.
+#}
+{% extends config.RECORDS_UI_BASE_TEMPLATE %}
+
+{% set title = "Plot simulations" %}
+
+{%- block page_body %}
+  <div class="ui grid container">
+    <div class="row"></div>
+    <div class="row">
+      <h2>Graph</h2>
+    </div>
+
+    <div data-invenio-search-config='{{
+       search_app_helpers.invenio_records_rest.generate(
+         dict(
+           endpoint_id="recid",
+           app_id="plot_search"
+         )
+       ) | tojson(indent=2) }}'>
+    </div>
+
+  </div>
+{% endblock page_body %}  
+ 
+{%- block javascript %}
+  {{ super() }}
+  {{ webpack['tdotdat-plot-app.js'] }}
+{% endblock javascript %}

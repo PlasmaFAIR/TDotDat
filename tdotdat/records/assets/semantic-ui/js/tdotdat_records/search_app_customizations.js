@@ -132,6 +132,12 @@ export const TDotDatSearchBarContainer = () => {
     });
   };
 
+  // Plot search results
+  const plotSearch = (event, data) => {
+    event.preventDefault();
+    window.location.href ="/records/plot" + window.location.search
+  }
+
   return (
     <Form>
       <Grid relaxed padded>
@@ -140,6 +146,7 @@ export const TDotDatSearchBarContainer = () => {
           <Grid.Column width={8}>
             <Button type="submit" onClick={handleDownloadAll} primary>Compare all</Button>
             <Button type="submit" onClick={handleDownloadSelected} secondary>Compare selected</Button>
+            <Button type="submit" onClick={plotSearch} secondary>Plot all</Button>
           </Grid.Column>
         </Grid.Row>
       </Grid>

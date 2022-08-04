@@ -321,3 +321,8 @@ def download(pid_value_list):
     )
 
     return render_template("records/compare.html", record_list=record_list)
+
+
+@blueprint.route("/plot")
+def plot():
+    return render_template("records/plot.html")
