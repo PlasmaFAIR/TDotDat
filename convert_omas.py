@@ -89,18 +89,18 @@ def dotted_name_to_nested_name(dotted):
     return result
 
 
-def to_json_schema(d):
+def to_json_schema(d, mapping=False):
     """Convert OMAS schema to JSON schema"""
 
     nested = benedict()
     for key, value in d.items():
         path = dotted_name_to_nested_name(key)
-        nested[path] = convert_value(value)
+        nested[path] = convert_value(value, mapping)
 
     return nested
 
 
-def convert_value(value):
+def convert_value(value, mapping):
     """Convert single OMAS schema key to JSON schema key"""
 
     DATA_TYPES = {
@@ -110,6 +110,14 @@ def convert_value(value):
         "INT_": "boolean",
         "CPX_": "object",
         "cons": "number",
+    }
+    MAPPING_DATA_TYPES = {
+        "STRU": "object",
+        "STR_": "keyword",
+        "FLT_": "double",
+        "INT_": "boolean",
+        "CPX_": "object",
+        "cons": "integer",
     }
     IGNORED_COMPONENTS = [
         "coordinates",
@@ -122,12 +130,14 @@ def convert_value(value):
         "structure_reference",
         "type",
     ]
+    if mapping:
+        IGNORED_COMPONENTS.append("documentation")
     data_type = value["data_type"]
-    json_element_type = DATA_TYPES[data_type[:4]]
+    json_element_type = (MAPPING_DATA_TYPES if mapping else DATA_TYPES)[data_type[:4]]
     is_array = bool(re.search(r"[1-9]+D", data_type)) or data_type.endswith("ARRAY")
     is_object = json_element_type == "object"
 
-    json_type = {"type": "array" if is_array else json_element_type}
+    json_type = {"type": "array" if (is_array and not mapping) else json_element_type}
     if is_object:
         properties = {}
         if data_type.startswith("CPX"):
@@ -137,26 +147,26 @@ def convert_value(value):
             for k, v in value.items():
                 if k in IGNORED_COMPONENTS:
                     continue
-                properties[k] = convert_value(v)
+                properties[k] = convert_value(v, mapping)
 
-    if is_array:
+    if is_array and not mapping:
         json_type["items"] = {"type": json_element_type}
         if is_object:
             json_type["items"]["properties"] = properties
     elif is_object:
         json_type["properties"] = properties
 
-    if docs := value.get("documentation", None):
+    if (docs := value.get("documentation", None)) and not mapping:
         json_type["description"] = docs
 
     return json_type
 
 
-def convert_omas_to_json_schema(filename):
+def convert_omas_to_json_schema(filename, mapping=False):
     """Read and convert OMAS schema to JSON schema"""
     gk = read_schema(filename)
     prune(gk)
-    converted = to_json_schema(to_benedict(gk))
+    converted = to_json_schema(to_benedict(gk), mapping)
     return json.loads(converted.to_json(sort_keys=True))
 
 
