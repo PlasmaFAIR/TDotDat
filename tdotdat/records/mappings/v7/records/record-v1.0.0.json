@@ -17,23 +17,6 @@
             "id": {
                 "type": "keyword"
             },
-            "equilibrium": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "integer"
-                    },
-                    "elongation": {
-                        "type": "double"
-                    },
-                    "q": {
-                        "type": "double"
-                    },
-                    "B0": {
-                        "type": "double"
-                    }
-                }
-            },
             "keywords": {
                 "type": "keyword"
             },
@@ -76,29 +59,223 @@
                 "type": "date"
             },
             "software": {
-                "type": "object",
                 "properties": {
+                    "commit": {
+                        "type": "keyword"
+                    },
+                    "library": {
+                        "properties": {
+                            "commit": {
+                                "type": "keyword"
+                            },
+                            "name": {
+                                "type": "text"
+                            },
+                            "parameters": {
+                                "type": "text"
+                            },
+                            "repository": {
+                                "type": "keyword"
+                            },
+                            "version": {
+                                "type": "text"
+                            }
+                        },
+                        "type": "object"
+                    },
                     "name": {
+                        "type": "text"
+                    },
+                    "output_flag": {
+                        "type": "boolean"
+                    },
+                    "parameters": {
+                        "type": "text"
+                    },
+                    "repository": {
                         "type": "text"
                     },
                     "version": {
                         "type": "text"
                     }
-                }
+                },
+                "type": "object"
             },
-            "inputs": {
-                "type": "object",
+            "collisions": {
                 "properties": {
-                    "files": {
-                        "type": "text"
-                    },
-                    "temperature": {
-                        "type": "double"
-                    },
-                    "temperature_gradient": {
+                    "collisionality_norm": {
                         "type": "double"
                     }
-                }
+                },
+                "type": "object"
+            },
+            "flux_surface": {
+                "properties": {
+                    "b_field_tor_sign": {
+                        "type": "double"
+                    },
+                    "elongation": {
+                        "type": "double"
+                    },
+                    "ip_sign": {
+                        "type": "double"
+                    },
+                    "magnetic_shear_r_minor": {
+                        "type": "double"
+                    },
+                    "pressure_gradient_norm": {
+                        "type": "double"
+                    },
+                    "q": {
+                        "type": "double"
+                    },
+                    "r_minor_norm": {
+                        "type": "double"
+                    },
+                    "triangularity_lower": {
+                        "type": "double"
+                    },
+                    "triangularity_upper": {
+                        "type": "double"
+                    }
+                },
+                "type": "object"
+            },
+            "fluxes_integrated_norm": {
+                "properties": {
+                    "particles_a_field_parallel": {
+                        "type": "double"
+                    },
+                    "particles_phi_potential": {
+                        "type": "double"
+                    }
+                },
+                "type": "object"
+            },
+            "model": {
+                "properties": {
+                    "include_a_field_parallel": {
+                        "type": "boolean"
+                    },
+                    "include_centrifugal_effects": {
+                        "type": "boolean"
+                    },
+                    "include_full_curvature_drift": {
+                        "type": "boolean"
+                    },
+                    "initial_value_run": {
+                        "type": "boolean"
+                    },
+                    "non_linear_run": {
+                        "type": "boolean"
+                    },
+                    "time_interval_norm": {
+                        "type": "double"
+                    }
+                },
+                "type": "object"
+            },
+            "normalizing_quantities": {
+                "properties": {
+                    "b_field_tor": {
+                        "type": "double"
+                    },
+                    "n_e": {
+                        "type": "double"
+                    },
+                    "r": {
+                        "type": "double"
+                    },
+                    "t_e": {
+                        "type": "double"
+                    }
+                },
+                "type": "object"
+            },
+            "species": {
+                "properties": {
+                    "charge_norm": {
+                        "type": "double"
+                    },
+                    "density_log_gradient_norm": {
+                        "type": "double"
+                    },
+                    "density_norm": {
+                        "type": "double"
+                    },
+                    "mass_norm": {
+                        "type": "double"
+                    },
+                    "temperature_log_gradient_norm": {
+                        "type": "double"
+                    },
+                    "temperature_norm": {
+                        "type": "double"
+                    },
+                    "velocity_tor_gradient_norm": {
+                        "type": "double"
+                    }
+                },
+                "type": "object"
+            },
+            "species_all": {
+                "properties": {
+                    "beta_reference": {
+                        "type": "double"
+                    },
+                    "debye_length_reference": {
+                        "type": "double"
+                    },
+                    "shearing_rate_norm": {
+                        "type": "double"
+                    },
+                    "velocity_tor_norm": {
+                        "type": "double"
+                    },
+                    "zeff": {
+                        "type": "double"
+                    }
+                },
+                "type": "object"
+            },
+            "tag": {
+                "properties": {
+                    "comment": {
+                        "type": "keyword"
+                    },
+                    "name": {
+                        "type": "keyword"
+                    }
+                },
+                "type": "object"
+            },
+            "time": {
+                "type": "double"
+            },
+            "wavevector": {
+                "properties": {
+                    "binormal_component_norm": {
+                        "type": "double"
+                    },
+                    "eigenmode": {
+                        "properties": {
+                            "frequency_norm": {
+                                "type": "double"
+                            },
+                            "growth_rate_norm": {
+                                "type": "double"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "poloidal_turns": {
+                        "type": "double"
+                    },
+                    "radial_component_norm": {
+                        "type": "double"
+                    }
+                },
+                "type": "object"
             }
         }
     }

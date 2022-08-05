@@ -54,16 +54,6 @@
             "description": "Invenio record identifier.",
             "type": "string"
         },
-        "equilibrium": {
-            "description": "Equilibrium",
-            "type": "object",
-            "properties": {
-                "$ref": {
-                    "type": "string"
-                }
-            },
-            "required": ["$ref"]
-        },
         "keywords": {
             "description": "Free text keywords.",
             "items": {
@@ -134,58 +124,331 @@
             }
         },
         "software": {
-            "description": "The software that generated this output",
-            "type": "object",
+            "description": "Generic decription of the code-specific parameters for the code that has produced this IDS",
             "properties": {
+                "commit": {
+                    "description": "Unique commit reference of software",
+                    "type": "string"
+                },
+                "library": {
+                    "description": "List of external libraries used by the code that has produced this IDS",
+                    "items": {
+                        "properties": {
+                            "commit": {
+                                "description": "Unique commit reference of software",
+                                "type": "string"
+                            },
+                            "name": {
+                                "description": "Name of software",
+                                "type": "string"
+                            },
+                            "parameters": {
+                                "description": "List of the code specific parameters in XML format",
+                                "type": "string"
+                            },
+                            "repository": {
+                                "description": "URL of software repository",
+                                "type": "string"
+                            },
+                            "version": {
+                                "description": "Unique version (tag) of software",
+                                "type": "string"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "type": "array"
+                },
                 "name": {
+                    "description": "Name of software generating IDS",
+                    "type": "string"
+                },
+                "output_flag": {
+                    "description": "Output flag : 0 means the run is successful, other values mean some difficulty has been encountered, the exact meaning is then code specific. Negative values mean the result shall not be used.",
+                    "items": {
+                        "type": "boolean"
+                    },
+                    "type": "array"
+                },
+                "parameters": {
+                    "description": "List of the code specific parameters in XML format",
+                    "type": "string"
+                },
+                "repository": {
+                    "description": "URL of software repository",
                     "type": "string"
                 },
                 "version": {
+                    "description": "Unique version (tag) of software",
                     "type": "string"
                 }
-            }
+            },
+            "type": "object"
         },
-        "inputs": {
-            "description": "Code inputs",
-            "type": "object",
+        "collisions": {
+            "description": "Collisions related quantities",
             "properties": {
-                "files": {
-                    "description": "List of input files",
-                    "type": "array",
+                "collisionality_norm": {
+                    "description": "Normalised collisionality between two species",
                     "items": {
-                        "type": "string"
-                    }
-                },
-                "temperature": {
+                        "type": "number"
+                    },
+                    "type": "array"
+                }
+            },
+            "type": "object"
+        },
+        "flux_surface": {
+            "description": "Flux surface characteristics",
+            "properties": {
+                "b_field_tor_sign": {
+                    "description": "Sign of the toroidal magnetic field",
                     "type": "number"
                 },
-                "temperature_gradient": {
+                "elongation": {
+                    "description": "Elongation",
+                    "type": "number"
+                },
+                "ip_sign": {
+                    "description": "Sign of the plasma current",
+                    "type": "number"
+                },
+                "magnetic_shear_r_minor": {
+                    "description": "Magnetic shear, defined as r_minor_norm/q . dq/dr_minor_norm (different definition from the equilibrium IDS)",
+                    "type": "number"
+                },
+                "pressure_gradient_norm": {
+                    "description": "Normalised pressure gradient (derivative with respect to r_minor_norm)",
+                    "type": "number"
+                },
+                "q": {
+                    "description": "Safety factor",
+                    "type": "number"
+                },
+                "r_minor_norm": {
+                    "description": "Normalised minor radius of the flux surface of interest = 1/2 * (max(R) - min(R))/L_ref",
+                    "type": "number"
+                },
+                "triangularity_lower": {
+                    "description": "Lower triangularity",
+                    "type": "number"
+                },
+                "triangularity_upper": {
+                    "description": "Upper triangularity",
                     "type": "number"
                 }
-            }
+            },
+            "type": "object"
         },
-        "outputs": {
-            "type": "object",
-            "properties": {
-                "files": {
-                    "description": "List of output files",
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
-                "flux": {
-                    "type": "array",
-                    "items": {
+        "fluxes_integrated_norm": {
+            "description": "Normalised fluxes of particles computed in the laboratory frame per species and integrated over the time interval specified in model/time_interval_norm (non-linear runs only)",
+            "items": {
+                "properties": {
+                    "particles_a_field_parallel": {
+                        "description": "Contribution of the perturbed parallel electromagnetic potential to the normalised particle flux",
+                        "type": "number"
+                    },
+                    "particles_phi_potential": {
+                        "description": "Contribution of the perturbed electrostatic potential to the normalised particle flux",
                         "type": "number"
                     }
                 },
-                "wavenumber": {
-                    "type": "array",
+                "type": "object"
+            },
+            "type": "array"
+        },
+        "model": {
+            "description": "Assumptions of the GK calculations",
+            "properties": {
+                "include_a_field_parallel": {
+                    "description": "Flag = 1 if fluctuations of the parallel vector potential are retained, 0 otherwise",
+                    "type": "boolean"
+                },
+                "include_centrifugal_effects": {
+                    "description": "Flag = 1 if centrifugal effects are retained, 0 otherwise",
+                    "type": "boolean"
+                },
+                "include_full_curvature_drift": {
+                    "description": "Flag = 1 if all contributions to the curvature drift are included (including beta_prime), 0 otherwise. Neglecting the beta_prime contribution (Flag=0) is only recommended together with the neglect of parallel magnetic field fluctuations",
+                    "type": "boolean"
+                },
+                "initial_value_run": {
+                    "description": "Flag = 1 if this is an initial value run, 0 for an eigenvalue run",
+                    "type": "boolean"
+                },
+                "non_linear_run": {
+                    "description": "Flag = 1 if this is a non-linear run, 0 for a linear run",
+                    "type": "boolean"
+                },
+                "time_interval_norm": {
+                    "description": "Normalised time interval used to average fluxes and moments from non-linear runs",
                     "items": {
                         "type": "number"
-                    }
+                    },
+                    "type": "array"
                 }
+            },
+            "type": "object"
+        },
+        "normalizing_quantities": {
+            "description": "Physical quantities used for normalization (useful to link to the original simulation/experience)",
+            "properties": {
+                "b_field_tor": {
+                    "description": "Toroidal magnetic field at major radius r",
+                    "type": "number"
+                },
+                "n_e": {
+                    "description": "Electron density at outboard equatorial midplane of the flux surface (poloidal_angle = 0)",
+                    "type": "number"
+                },
+                "r": {
+                    "description": "Major radius of the flux surface of interest, defined as (min(R)+max(R))/2",
+                    "type": "number"
+                },
+                "t_e": {
+                    "description": "Electron temperature at outboard equatorial midplane of the flux surface (poloidal_angle = 0)",
+                    "type": "number"
+                }
+            },
+            "type": "object"
+        },
+        "species": {
+            "description": "Set of species (including electrons) used in the calculation and related quantities",
+            "items": {
+                "properties": {
+                    "charge_norm": {
+                        "description": "Normalised charge",
+                        "type": "number"
+                    },
+                    "density_log_gradient_norm": {
+                        "description": "Normalised logarithmic gradient (with respect to r_minor_norm) of the density",
+                        "type": "number"
+                    },
+                    "density_norm": {
+                        "description": "Normalised density",
+                        "type": "number"
+                    },
+                    "mass_norm": {
+                        "description": "Normalised mass",
+                        "type": "number"
+                    },
+                    "temperature_log_gradient_norm": {
+                        "description": "Normalised logarithmic gradient (with respect to r_minor_norm) of the temperature",
+                        "type": "number"
+                    },
+                    "temperature_norm": {
+                        "description": "Normalised temperature",
+                        "type": "number"
+                    },
+                    "velocity_tor_gradient_norm": {
+                        "description": "Normalised gradient (with respect to r_minor_norm) of the toroidal velocity",
+                        "type": "number"
+                    }
+                },
+                "type": "object"
+            },
+            "type": "array"
+        },
+        "species_all": {
+            "description": "Physical quantities common to all species",
+            "properties": {
+                "beta_reference": {
+                    "description": "Reference plasma beta (see detailed documentation at the root of the IDS)",
+                    "type": "number"
+                },
+                "debye_length_reference": {
+                    "description": "Debye length computed from the reference quantities (see detailed documentation at the root of the IDS)",
+                    "type": "number"
+                },
+                "shearing_rate_norm": {
+                    "description": "Normalised ExB shearing rate (for non-linear runs only)",
+                    "type": "number"
+                },
+                "velocity_tor_norm": {
+                    "description": "Normalised toroidal velocity of species (all species are assumed to have a purely toroidal velocity with a common toroidal angular frequency)",
+                    "type": "number"
+                },
+                "zeff": {
+                    "description": "Effective charge",
+                    "type": "number"
+                }
+            },
+            "type": "object"
+        },
+        "tag": {
+            "description": "Set of tags to which this entry belongs",
+            "items": {
+                "properties": {
+                    "comment": {
+                        "description": "Any comment describing the content of the tagged list of entries",
+                        "type": "string"
+                    },
+                    "name": {
+                        "description": "Name of the tag",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "type": "array"
+        },
+        "time": {
+            "description": "Generic time",
+            "items": {
+                "type": "number"
+            },
+            "type": "array"
+        },
+        "wavevector": {
+            "description": "Set of wavevectors",
+            "items": {
+                "properties": {
+                    "binormal_component_norm": {
+                        "description": "Normalised binormal component of the wavevector",
+                        "type": "number"
+                    },
+                    "eigenmode": {
+                        "description": "Set of eigenmode for this wavector",
+                        "items": {
+                            "properties": {
+                                "frequency_norm": {
+                                    "description": "Frequency",
+                                    "type": "number"
+                                },
+                                "growth_rate_norm": {
+                                    "description": "Growth rate",
+                                    "type": "number"
+                                }
+                            },
+                            "type": "object"
+                        },
+                        "type": "array"
+                    },
+                    "poloidal_turns": {
+                        "description": "Number of poloidal turns considered in the flux-tube simulation",
+                        "type": "number"
+                    },
+                    "radial_component_norm": {
+                        "description": "Normalised radial component of the wavevector",
+                        "type": "number"
+                    }
+                },
+                "type": "object"
+            },
+            "type": "array"
+        },
+        "input_files": {
+            "description": "List of input files",
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "output_files": {
+            "description": "List of output files",
+            "type": "array",
+            "items": {
+                "type": "string"
             }
         }
     },
