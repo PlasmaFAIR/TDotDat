@@ -4,6 +4,7 @@ import argparse
 import json
 import pathlib
 import re
+import textwrap
 from benedict import benedict
 
 
@@ -48,6 +49,8 @@ def arbitrary_fixes(data):
     # schema's native types only have "number" and not any
     # float/integer distinction
     data["gyrokinetics.wavevector[:].poloidal_turns"]["data_type"] = "FLT_0D"
+
+    # output_flag
 
     return data
 
@@ -155,6 +158,71 @@ def convert_omas_to_json_schema(filename):
     prune(gk)
     converted = to_json_schema(to_benedict(gk))
     return json.loads(converted.to_json(sort_keys=True))
+
+
+def to_marshmallow(data):
+    """Convert JSON schema to set of marshmallow validator classes"""
+
+    MARSHMALLOW_TYPES = {
+        "number": "Number",
+        "string": "SanitizedUnicode",
+        "boolean": "Boolean",
+        "array": "List",
+    }
+
+    def convert_marshmallow(key, value, other_classes=None):
+        """Convert a nested dict to equivalent marshmallow types
+
+        Returns a tuple of dicts:
+        - the first describes the attributes of the current value
+        - the second is an accumulator of any nested classes
+        """
+        if other_classes is None:
+            other_classes = {}
+
+        try:
+            type_ = value["type"]
+        except KeyError:
+            breakpoint()
+
+        if type_ == "object":
+            other_classes[key] = {}
+            for k, v in value["properties"].items():
+                item, others = convert_marshmallow(k, v, other_classes)
+                other_classes[key].update(item)
+                other_classes.update(others)
+
+            return {key: f"Nested({key.capitalize()}SchemaV1)"}, other_classes
+
+        if type_ == "array":
+            item, others = convert_marshmallow(key, value["items"], other_classes)
+            other_classes.update(others)
+
+            return {key: f"List({item[key]})"}, other_classes
+
+        marsh_type = MARSHMALLOW_TYPES[type_]
+        return {key: f"{marsh_type}()"}, other_classes
+
+    def create_class(name, body):
+        """Create the string of the code describing a class defined by a dict of attributes"""
+        body_str = textwrap.indent(
+            "\n".join(f"{name} = {type_}" for name, type_ in body.items()), " " * 4
+        )
+
+        return textwrap.dedent(
+            "\n".join(
+                [f"class {name.capitalize()}SchemaV1(StrictKeysMixin):"] + [body_str]
+            )
+        )
+
+    # The passed in data only describes its attributes and not itself,
+    # so we need to wrap it up as if it were an object itself
+    _, other_classes = convert_marshmallow(
+        "gyrokinetics", {"type": "object", "properties": data}
+    )
+    return "\n\n".join(
+        create_class(name, body) for name, body in reversed(other_classes.items())
+    )
 
 
 if __name__ == "__main__":
