@@ -100,6 +100,11 @@ def to_json_schema(d, mapping=False):
     return nested
 
 
+def to_elasticsearch(d):
+    """Convert OMAS schema to elasticsearch JSON schema"""
+    return to_json_schema(d, mapping=True)
+
+
 def convert_value(value, mapping):
     """Convert single OMAS schema key to JSON schema key"""
 
@@ -162,7 +167,7 @@ def convert_value(value, mapping):
     return json_type
 
 
-def convert_omas_to_json_schema(filename, mapping=False):
+def omas_to_json_schema(filename, mapping=False):
     """Read and convert OMAS schema to JSON schema"""
     gk = read_schema(filename)
     prune(gk)
@@ -170,7 +175,11 @@ def convert_omas_to_json_schema(filename, mapping=False):
     return json.loads(converted.to_json(sort_keys=True))
 
 
-def to_marshmallow(data):
+def omas_to_elasticsearch_schema(filename):
+    return omas_to_json_schema(filename, mapping=True)
+
+
+def json_to_marshmallow(data):
     """Convert JSON schema to set of marshmallow validator classes"""
 
     MARSHMALLOW_TYPES = {
@@ -235,10 +244,95 @@ def to_marshmallow(data):
     )
 
 
+def json_to_dataclasses(data):
+    """Convert JSON schema to set of marshmallow validator classes"""
+
+    PYTHON_TYPES = {
+        "number": "float",
+        "string": "str",
+        "boolean": "bool",
+        "array": "list",
+    }
+
+    def convert_python(key, value, other_classes=None):
+        """Convert a nested dict to equivalent marshmallow types
+
+        Returns a tuple of dicts:
+        - the first describes the attributes of the current value
+        - the second is an accumulator of any nested classes
+        """
+        if other_classes is None:
+            other_classes = {}
+
+        try:
+            type_ = value["type"]
+        except KeyError:
+            breakpoint()
+
+        if type_ == "object":
+            other_classes[key] = {}
+            for k, v in value["properties"].items():
+                item, others = convert_python(k, v, other_classes)
+                other_classes[key].update(item)
+                other_classes.update(others)
+
+            return {key: key.capitalize()}, other_classes
+
+        if type_ == "array":
+            item, others = convert_python(key, value["items"], other_classes)
+            other_classes.update(others)
+
+            return {key: f"List[{item[key]}]"}, other_classes
+
+        marsh_type = PYTHON_TYPES[type_]
+        return {key: marsh_type}, other_classes
+
+    def create_class(name, body):
+        """Create the string of the code describing a class defined by a dict of attributes"""
+        body_str = textwrap.indent(
+            "\n".join(
+                f"{name}: Optional[{type_}] = None" for name, type_ in body.items()
+            ),
+            " " * 4,
+        )
+
+        return textwrap.dedent(
+            "\n".join([f"@dataclass\nclass {name.capitalize()}:"] + [body_str])
+        )
+
+    # The passed in data only describes its attributes and not itself,
+    # so we need to wrap it up as if it were an object itself
+    _, other_classes = convert_python(
+        "gyrokinetics", {"type": "object", "properties": data}
+    )
+    return "\n\n".join(
+        create_class(name, body) for name, body in reversed(other_classes.items())
+    )
+
+
+def omas_to_marshmallow(filename):
+    data = omas_to_json_schema(filename)
+    return json_to_marshmallow(data)
+
+
+def omas_to_dataclasses(filename):
+    data = omas_to_json_schema(filename)
+    return json_to_dataclasses(data)
+
+
+METHODS = {
+    "jsonschema": omas_to_json_schema,
+    "elasticsearch": omas_to_elasticsearch_schema,
+    "marshmallow": omas_to_marshmallow,
+    "dataclasses": omas_to_dataclasses,
+}
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser("Convert OMAS schema to JSON schema")
-    parser.add_argument("file", help="Filename of OMAS schema")
+    parser.add_argument("filename", help="Filename of OMAS schema")
+    parser.add_argument("to", choices=METHODS.keys())
 
     args = parser.parse_args()
 
-    print(convert_omas_to_json_schema(args.file))
+    print(METHODS[args.to](args.filename))
