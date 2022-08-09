@@ -7,28 +7,44 @@ import { withState } from "react-searchkit";
 export const Results = ({ currentResultsState = {} }) => {
   const { total, hits } = currentResultsState.data;
 
-  const temperature = hits.map(hit => hit.metadata.inputs.temperature);
-  const q = hits.map(hit => hit.metadata.equilibrium.q);
+  var growth_rate = new Array;
+    hits.forEach(hit => (
+        hit.metadata.wavevector.forEach(wavevector => {
+            console.log("wavevector", wavevector);
+            growth_rate.push(wavevector.eigenmode[0].growth_rate_norm)
+        })
+    ));
+
+  var ky = new Array;
+    hits.forEach(hit => (
+        hit.metadata.wavevector.forEach(wavevector => (
+            ky.push(wavevector.binormal_component_norm)
+        ))
+    ));
+
+    console.log(ky, growth_rate);
 
   return (
     <Grid relaxed>
-      <Grid.Row/>
       <Grid.Row columns={2} width={12}>
         <Grid.Column width={4}>
-          Total simulations: <Label color="blue">{total}</Label>
+            Total simulations: <Label color="blue">{total}</Label>
+        </Grid.Column>
+        <Grid.Column width={8}>
+            Search above to change plot data
         </Grid.Column>
       </Grid.Row>
       <Grid.Row>
         <Plot
             data={[
               {
-                x: q,
-                y: temperature,
+                x: ky,
+                y: growth_rate,
                 type: 'scatter',
                 mode: 'markers',
               },
             ]}
-            layout={ {xaxis: {title: {text: "q"}}, yaxis: {title: {text: "temperature"}}} }
+            layout={ {xaxis: {title: {text: "ky"}}, yaxis: {title: {text: "growth rate"}}} }
         />
        </Grid.Row>
     </Grid>
