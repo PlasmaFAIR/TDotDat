@@ -276,6 +276,9 @@
                     }
                 },
                 "type": "object"
+            },
+            "converged": {
+                "type": "boolean"
             }
         }
     }

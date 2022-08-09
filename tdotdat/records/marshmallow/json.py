@@ -190,6 +190,7 @@ class MetadataSchemaV1(StrictKeysMixin):
     tag = List(Nested(TagSchemaV1))
     time = List(Number())
     wavevector = List(Nested(WavevectorSchemaV1))
+    converged = Boolean()
     inputs = Nested(InputsSchemaV1)
     outputs = Nested(OutputsSchemaV1)
     _schema = GenFunction(

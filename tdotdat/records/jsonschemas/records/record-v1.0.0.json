@@ -450,6 +450,10 @@
             "items": {
                 "type": "string"
             }
+        },
+        "converged": {
+            "description": "Is the simulation converged?",
+            "type": "boolean"
         }
     },
     "required": [
