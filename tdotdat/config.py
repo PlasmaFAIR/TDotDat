@@ -143,11 +143,11 @@ SESSION_COOKIE_SAMESITE = "Strict"
 #: provided, the allowed hosts variable is set to localhost. In production it
 #: should be set to the correct host and it is strongly recommended to only
 #: route correct hosts to the application.
-APP_ALLOWED_HOSTS = ["tdotdat.com", "localhost", "127.0.0.1"]
+APP_ALLOWED_HOSTS = ["tdotdat.york.ac.uk", "localhost", "127.0.0.1"]
 
 # OAI-PMH
 # =======
-OAISERVER_ID_PREFIX = "oai:tdotdat.com:"
+OAISERVER_ID_PREFIX = "oai:tdotdat.york.ac.uk:"
 
 # Previewers
 # ==========
