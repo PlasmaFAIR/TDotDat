@@ -7,9 +7,14 @@
 
 """Permissions for TDotDat."""
 
-from invenio_access import Permission, any_user
+from invenio_access import Permission, authenticated_user
 
 
 def files_permission_factory(obj, action=None):
     """Permissions factory for buckets."""
-    return Permission(any_user)
+    return Permission(authenticated_user)
+
+
+def authenticated_user_permission(record=None):
+    """Permissions factory for checking for authenticated users"""
+    return Permission(authenticated_user)

@@ -9,10 +9,11 @@
 
 from invenio_indexer.api import RecordIndexer
 from invenio_records_rest.facets import terms_filter
-from invenio_records_rest.utils import allow_all, check_elasticsearch
+from invenio_records_rest.utils import allow_all, check_elasticsearch, deny_all
 from invenio_search import RecordsSearch
 
 from tdotdat.records.api import Record
+from tdotdat.records.permissions import authenticated_user_permission
 
 
 def _(x):
@@ -50,10 +51,10 @@ RECORDS_REST_ENDPOINTS = {
         default_media_type='application/json',
         max_result_window=10000,
         error_handlers=dict(),
-        create_permission_factory_imp=allow_all,
+        create_permission_factory_imp=authenticated_user_permission,
         read_permission_factory_imp=check_elasticsearch,
-        update_permission_factory_imp=allow_all,
-        delete_permission_factory_imp=allow_all,
+        update_permission_factory_imp=authenticated_user_permission,
+        delete_permission_factory_imp=deny_all,
         list_permission_factory_imp=allow_all,
         links_factory_imp='invenio_records_files.'
                           'links:default_record_files_links_factory',
