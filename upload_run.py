@@ -4,6 +4,7 @@ import argparse
 import pathlib
 import requests
 import json
+from urllib.parse import urljoin
 
 import pyrokinetics
 
@@ -69,13 +70,17 @@ def convert_to_omas(pyro):
     return data
 
 
-def upload(filename, data, url="https://localhost:5000/api/records"):
-    verify = "localhost" not in url
+def upload(
+    filename, data, server="https://localhost:5000", endpoint="api/records", token=None
+):
 
-    r = requests.post(url, json=data, verify=verify)
+    url = urljoin(server, endpoint)
+    verify = "localhost" not in server
+    header = {"Authorization": f"Bearer {token}"} if token else {}
+
+    r = requests.post(url, json=data, verify=verify, headers=header)
 
     if not r.ok:
-        breakpoint()
         raise RuntimeError(
             f"Server error on initial upload ({r.status_code}): {r.json()}"
         )
@@ -85,7 +90,7 @@ def upload(filename, data, url="https://localhost:5000/api/records"):
     with open(filename) as f:
         new_id = r.json()["id"]
         file_url = f"{url}/{new_id}/files/{filename.name}"
-        r = requests.put(file_url, data=f, verify=verify)
+        r = requests.put(file_url, data=f, verify=verify, headers=header)
 
     if not r.ok:
         raise RuntimeError(f"Server error on file upload ({r.status_code}): {r.json()}")
@@ -115,6 +120,12 @@ def run():
     parser.add_argument(
         "--quiet", action="store_true", help="Don't print received result"
     )
+    parser.add_argument(
+        "--server", help="URL of TDotDat server", default="https://localhost:5000"
+    )
+    parser.add_argument(
+        "--token", help="Personal Access Token. Required for authentication"
+    )
 
     args = parser.parse_args()
 
@@ -128,7 +139,7 @@ def run():
     data["title"] = args.title or args.filename.name
     data["converged"] = not args.unconverged
 
-    result_json = upload(args.filename, data)
+    result_json = upload(args.filename, data, server=args.server, token=args.token)
 
     if not args.quiet:
         print(json.dumps(result_json))
