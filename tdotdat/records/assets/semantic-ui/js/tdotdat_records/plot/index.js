@@ -10,7 +10,6 @@ export const Results = ({ currentResultsState = {} }) => {
   var growth_rate = new Array;
     hits.forEach(hit => (
         hit.metadata.wavevector.forEach(wavevector => {
-            console.log("wavevector", wavevector);
             growth_rate.push(wavevector.eigenmode[0].growth_rate_norm)
         })
     ));
