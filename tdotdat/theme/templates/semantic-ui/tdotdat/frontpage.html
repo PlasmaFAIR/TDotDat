@@ -10,19 +10,86 @@
 {% block page_body %}
 <div class="ui container grid">
   <div class="row"></div>
-  <div class="row">
-    <div class="column"><h1 id="frontpage-h1" class="ui header centered">Welcome to TDotDat.</h1></div>
-  </div>
+  <div class="row"></div>
 </div>
 
-<div class="ui container grid">
+<div class="ui text container">
+  <h1 id="frontpage-h1" class="ui header centered">Welcome to TDotDat.</h1>
+
+  <h3 class="second">A Gyrokinetic simulation database</h3>
+  <p>
+    TDotDat is a database of gyrokinetic simulations for
+    the <a href="https://www.tdotp.ac.uk">TDoTP</a> project. This is
+    in the development phase and is liable to change quite a lot.
+
+    TDotDat uses
+    <a href="https://github.com/pyro-kinetics/pyrokinetics">
+      Pyrokinetics
+    </a>
+    to read simulations from a variety of gyrokinetic solvers,
+    including GS2, GENE, and CGYRO.
+
+    Data is stored following the
+    <a href="https://gitlab.com/gkdb/gkdb/raw/master/doc/general/IOGKDB.pdf">GKDB</a>,
+    IMAS/<a href="https://gafusion.github.io/omas/schema/schema_gyrokinetics.html">OMAS</a>
+    schema.
+  </p>
+  <h3 class="second">Access</h3>
+  <p>
+    Access is currently restricted to TDoTP researchers. Please
+    contact Peter Hill to get a user account. If you don't know how to
+    do that, you're not supposed to have acess &#128516;
+  </p>
+  <h3 class="second">Bug reports and feedback</h3>
+  <p>
+    Please report any issues via
+    our <a href="https://github.com/PlasmaFAIR/TDotDat/issues">issue
+    tracker</a>
+  </p>
+</div>
+
+<div class="ui container two column grid">
   <div class="row"></div>
   <div class="row">
     <div class="column">
       <div class="ui message">
         <h2 class="ui header">Let's get started</h2>
-        <p>Upload a new gyrokinetic simulation</p>
+        <p>
+          Upload a new gyrokinetic simulation using web form. Good for
+          simple simulations with a single input and output file.
+        </p>
         <a href="{{ url_for('tdotdat_records.create') }}" class="ui primary button">Create upload</a>
+      </div>
+    </div>
+    <div class="column">
+      <div class="ui message">
+        <h2 class="ui header">Or script your uploads</h2>
+        <p>
+          Especially useful for simulations with multiple input or
+          output files, or for automating uploading many
+          simulations. Follow these steps to use our script:
+        </p>
+        <ol>
+          <li>
+            Create a Personal Access Token (PAT) from
+            <a href="account/settings/applications/tokens/new/">
+              <em>My Account > Applications > Personal access tokens > new</em>
+            </a><br>
+            Make sure to save the token somewhere -- it will only be shown once!
+          </li>
+          <li>
+            Download the TDotDat
+            <a href="https://github.com/PlasmaFAIR/TDotDat/blob/main/upload_run.py">upload script</a>
+          </li>
+          <li>
+            Run the script like:<br>
+            <code>
+              $ export my_token=&lt;your PAT&gt;<br>
+              $ ./upload_run.py &lt;simulation input file&gt; \<br>
+              &nbsp;&nbsp;--token=$my_token
+            </code>
+          </li>
+        </ol>
       </div>
     </div>
   </div>
