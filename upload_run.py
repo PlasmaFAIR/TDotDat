@@ -121,7 +121,7 @@ def run():
         "--quiet", action="store_true", help="Don't print received result"
     )
     parser.add_argument(
-        "--server", help="URL of TDotDat server", default="https://localhost:5000"
+        "--server", help="URL of TDotDat server", default="https://tdotdat.york.ac.uk"
     )
     parser.add_argument(
         "--token", help="Personal Access Token. Required for authentication"
