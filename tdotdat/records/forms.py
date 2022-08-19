@@ -12,5 +12,5 @@ class RecordForm(FlaskForm):
     equilibrium_id = IntegerField("Equilibrium ID")
     converged = BooleanField("Is simulation converged?")
 
-    input_file = FileField("Input file")
+    input_file = FileField("Input file", [validators.DataRequired()])
     output_file = FileField("Output file")
