@@ -178,45 +178,7 @@ def create():
 
             # Note this relies on details of the file storage to get the filename
             pyro = pyrokinetics.Pyro(gk_file=in_file.file.storage().fileurl)
-
-            geometry = pyro.local_geometry
-            species_list = [
-                pyro.local_species[name] for name in pyro.local_species.names
-            ]
-
-            species_data = [
-                {
-                    "charge_norm": species.z,
-                    "mass_norm": species.mass,
-                    "temperature_norm": species.temp,
-                    "temperature_log_gradient_norm": species.a_lt,
-                    "density_norm": species.dens,
-                    "density_log_gradient_norm": species.a_ln,
-                    "velocity_tor_gradient_norm": species.a_lv,
-                }
-                for species in species_list
-            ]
-
-            data.update(
-                {
-                    "software": {"name": pyro.gk_code},
-                    "wavevector": [],
-                    "flux_surface": {
-                        "elongation": geometry.kappa,
-                        "magnetic_shear_r_minor": geometry.shat,
-                        "q": geometry.q,
-                        "triangularity_lower": geometry.delta,
-                        "triangularity_upper": geometry.delta,
-                        "r_minor_norm": geometry.rho,
-                    },
-                    "species": species_data,
-                    "model": {
-                        "non_linear_run": pyro.numerics.nonlinear,
-                    },
-                    "input_files": [in_file.key],
-                }
-            )
-
+            data.update({"input_files": [in_file.key], **pyro.to_imas()})
         else:
             data.update({"software": {"name": form.software.data}})
 
@@ -230,25 +192,7 @@ def create():
                 raise RuntimeError("Missing input file")
 
             pyro.load_gk_output(out_file.file.storage().fileurl)
-            wavevector = []
-
-            for kx in range(len(pyro.gk_output.kx)):
-                for ky in range(len(pyro.gk_output.ky)):
-                    point = pyro.gk_output.isel(time=-1, kx=kx, ky=ky)
-                    wavevector.append(
-                        dict(
-                            radial_component_norm=point.kx.data[()],
-                            binormal_component_norm=point.ky.data[()],
-                            eigenmode=[
-                                dict(
-                                    frequency_norm=point.mode_frequency.data[()],
-                                    growth_rate_norm=point.growth_rate.data[()],
-                                )
-                            ],
-                        )
-                    )
-
-            data.update({"output_files": [out_file.key], "wavevector": wavevector})
+            data.update({"output_files": [out_file.key], **pyro.to_imas()})
 
         files = [
             dict(

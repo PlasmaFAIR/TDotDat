@@ -16,60 +16,6 @@ def read(filename: pathlib.Path) -> pyrokinetics.Pyro:
     return pyro
 
 
-def convert_to_omas(pyro):
-
-    geometry = pyro.local_geometry
-    species_list = [pyro.local_species[name] for name in pyro.local_species.names]
-
-    species_data = [
-        {
-            "charge_norm": species.z,
-            "mass_norm": species.mass,
-            "temperature_norm": species.temp,
-            "temperature_log_gradient_norm": species.a_lt,
-            "density_norm": species.dens,
-            "density_log_gradient_norm": species.a_ln,
-            "velocity_tor_gradient_norm": species.a_lv,
-        }
-        for species in species_list
-    ]
-
-    data = {
-        "software": {"name": pyro.gk_code},
-        "wavevector": [],
-        "flux_surface": {
-            "elongation": geometry.kappa,
-            "magnetic_shear_r_minor": geometry.shat,
-            "q": geometry.q,
-            "triangularity_lower": geometry.delta,
-            "triangularity_upper": geometry.delta,
-            "r_minor_norm": geometry.rho,
-        },
-        "species": species_data,
-        "model": {
-            "non_linear_run": pyro.numerics.nonlinear,
-        },
-    }
-
-    for kx in range(len(pyro.gk_output.kx)):
-        for ky in range(len(pyro.gk_output.ky)):
-            point = pyro.gk_output.isel(time=-1, kx=kx, ky=ky)
-            data["wavevector"].append(
-                dict(
-                    radial_component_norm=point.kx.data[()],
-                    binormal_component_norm=point.ky.data[()],
-                    eigenmode=[
-                        dict(
-                            frequency_norm=point.mode_frequency.data[()],
-                            growth_rate_norm=point.growth_rate.data[()],
-                        )
-                    ],
-                )
-            )
-
-    return data
-
-
 def upload(
     filename, data, server="https://localhost:5000", endpoint="api/records", token=None
 ):
@@ -129,9 +75,7 @@ def run():
 
     args = parser.parse_args()
 
-    pyro = read(args.filename)
-    data = convert_to_omas(pyro)
-
+    data = read(args.filename).to_imas()
     data["contributors"] = [
         {"name": contributor}
         for contributor in args.contributors or [args.filename.owner()]
