@@ -28,6 +28,9 @@ theme = WebpackThemeBundle(
             },
             dependencies={
                 # add any additional npm dependencies here...
+                "@ckeditor/ckeditor5-build-classic": "^16.0.0",
+                "@ckeditor/ckeditor5-react": "^2.1.0",
+                "formik": "^2.1.0",
             },
             aliases={
                 '../../theme.config$': 'less/tdotdat/theme.config',

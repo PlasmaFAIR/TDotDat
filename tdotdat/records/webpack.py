@@ -25,6 +25,7 @@ search_app = WebpackThemeBundle(
                 "react": "^16.9.0",
                 "react-dom": "^16.9.0",
                 "react-overridable": "^0.0.2",
+                "react-searchkit": "^2.0.1",
                 "semantic-ui-react": "^0.88.0",
                 "plotly.js": "^2.13.3",
                 "react-plotly.js": "^2.5.1",
