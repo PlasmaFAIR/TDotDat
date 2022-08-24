@@ -15,5 +15,4 @@
 FROM inveniosoftware/centos8-python:3.8
 RUN pip install --upgrade pip
 COPY ./ .
-COPY ./.git .
 RUN pip install -e .
