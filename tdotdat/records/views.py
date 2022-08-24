@@ -11,6 +11,7 @@ from operator import itemgetter
 from os.path import splitext
 import json
 from io import BytesIO
+import copy
 
 from flask import (
     Blueprint,
@@ -35,6 +36,7 @@ from invenio_pidstore.errors import (
     PIDRedirectedError,
     PIDUnregistered,
 )
+from invenio_jsonschemas import current_jsonschemas
 from werkzeug.routing import BuildError, BaseConverter
 
 import pyrokinetics
@@ -326,3 +328,27 @@ def download(pid_value_list):
 @blueprint.route("/plot")
 def plot():
     return render_template("records/plot.html")
+
+
+@blueprint.route("/reference")
+def reference():
+    schema = copy.deepcopy(current_jsonschemas.get_schema(Record._schema))["properties"]
+    DROP_KEYS = ["$schema", "_bucket", "_files"]
+    for key in DROP_KEYS:
+        del schema[key]
+
+    def flatten_dict(data, parent=None):
+        result = {}
+        for key, value in data.items():
+            name = f"{parent}.{key}" if parent else key
+            result[name] = {
+                "type": value["type"],
+                "description": value.get("description", ""),
+            }
+            result.update(flatten_dict(value.get("properties", {}), parent=name))
+            result.update(
+                flatten_dict(value.get("items", {}).get("properties", {}), parent=name)
+            )
+        return result
+
+    return render_template("records/reference.html", schema=flatten_dict(schema))

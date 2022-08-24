@@ -1,0 +1,49 @@
+{# -*- coding: utf-8 -*-
+Copyright (C) 2022 TDoTP.
+#}
+{% extends config.RECORDS_UI_BASE_TEMPLATE %}
+
+{%- macro schema_item(name, item) %}
+  <tr>
+    <td data-label="Name"><code>{{ name }}</code></td>
+    <td data-label="Type"><code>{{ item.type }}</code></td>
+    <td data-label="Description">{{ item.description }}</td>
+  </tr>
+{% endmacro %}
+
+{%- block page_body %}
+  <div class="ui grid container">
+    <div class="row"></div>
+    <div class="row">
+      <div class="column">
+        <h2 class="first">Schema Reference</h2>
+
+        <p>
+        This is a description of the gyrokinetic simulation schema as
+        implemeted in TDotDat. Note that not every simulation will
+        have all elements described below.
+        </p>
+
+        <p>
+        See <a href="https://gitlab.com/gkdb/gkdb/raw/master/doc/general/IOGKDB.pdf">GKDB</a>
+        for more a complete description of the physics values, their meanings and normalisations.
+        </p>
+
+        <table class="ui celled table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for name, item in schema.items() %}
+              {{ schema_item(name, item) }}
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+{% endblock page_body %}
