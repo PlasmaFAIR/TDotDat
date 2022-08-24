@@ -144,8 +144,8 @@ export const TDotDatSearchBarContainer = () => {
         <Grid.Row columns={2}>
           <Grid.Column width={4} />
           <Grid.Column width={8}>
-            <Button type="submit" onClick={handleDownloadAll} primary>Compare all</Button>
-            <Button type="submit" onClick={handleDownloadSelected} secondary>Compare selected</Button>
+            <Button type="submit" onClick={handleDownloadAll} primary>Download all</Button>
+            <Button type="submit" onClick={handleDownloadSelected} secondary>Download selected</Button>
             <Button type="submit" onClick={plotSearch} secondary>Plot all</Button>
           </Grid.Column>
         </Grid.Row>
