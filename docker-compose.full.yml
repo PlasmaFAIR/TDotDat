@@ -65,6 +65,7 @@ services:
       - static_data:/opt/invenio/var/instance/static
       - uploaded_data:/opt/invenio/var/instance/data
       - archived_data:/opt/invenio/var/instance/archive
+      - log_data:/opt/invenio/var/instance/logs
     links:
       - cache
       - es
@@ -82,6 +83,7 @@ services:
     volumes:
       - uploaded_data:/opt/invenio/var/instance/data
       - archived_data:/opt/invenio/var/instance/archive
+      - log_data:/opt/invenio/var/instance/logs
     links:
       - cache
       - es
@@ -93,7 +95,7 @@ services:
       file: docker-services.yml
       service: app
     restart: "always"
-    command: ["celery -A invenio_app.celery worker --loglevel=INFO"]
+    command: ["celery -A invenio_app.celery worker --loglevel=INFO --logfile /opt/invenio/var/instance/logs/celery.log"]
     image: tdotdat
     links:
       - cache
@@ -103,6 +105,7 @@ services:
     volumes:
       - uploaded_data:/opt/invenio/var/instance/data
       - archived_data:/opt/invenio/var/instance/archive
+      - log_data:/opt/invenio/var/instance/logs
   # Monitoring of Celery
   # http://127.0.0.1:5555
   flower:
@@ -141,3 +144,4 @@ volumes:
   static_data:
   uploaded_data:
   archived_data:
+  log_data:
