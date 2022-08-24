@@ -153,3 +153,26 @@ export const TDotDatSearchBarContainer = () => {
     </Form>
   )
 };
+
+
+export const TDotDatValueElement = ({
+  bucket,
+  label,
+  onFilterClicked,
+  isSelected,
+  childAggCmps,
+}) => {
+  const keyField = bucket.key_as_string ? bucket.key_as_string : bucket.key;
+
+  return (
+    <List.Item key={bucket.key}>
+      <Checkbox
+        label={label}
+        value={keyField}
+        onClick={() => onFilterClicked(keyField)}
+        checked={isSelected}
+      />
+      {childAggCmps}
+    </List.Item>
+  );
+};

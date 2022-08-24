@@ -3,12 +3,14 @@ import {
   TDotDatSearchBarElement,
   TDotDatResultsListItem,
   TDotDatResultsGridItem,
-  TDotDatSearchBarContainer
+  TDotDatSearchBarContainer,
+  TDotDatValueElement
  } from "./search_app_customizations";
 
 const initSearchApp = createSearchAppInit({
   "ResultsList.item": TDotDatResultsListItem,
   "ResultsGrid.item": TDotDatResultsGridItem,
   "SearchBar.element": TDotDatSearchBarElement,
-  "SearchApp.searchbarContainer": TDotDatSearchBarContainer
+  "SearchApp.searchbarContainer": TDotDatSearchBarContainer,
+  "BucketAggregationValues.element": TDotDatValueElement
 });

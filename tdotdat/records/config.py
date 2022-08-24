@@ -96,12 +96,16 @@ TDOTDAT_ENDPOINTS_ENABLED = True
 RECORDS_REST_FACETS = dict(
     records=dict(
         aggs=dict(
-            type=dict(terms=dict(field='type')),
-            keywords=dict(terms=dict(field='keywords'))
+            nonlinear=dict(terms=dict(field='model.non_linear_run')),
+            software={"terms": {"field": "software.name"}},
+            keywords=dict(terms=dict(field='keywords')),
+            converged={"terms": {"field": "converged"}},
         ),
         post_filters=dict(
-            type=terms_filter('type'),
+            nonlinear=terms_filter('model.non_linear_run'),
+            software=terms_filter("software.name"),
             keywords=terms_filter('keywords'),
+            converged=terms_filter("converged"),
         )
     )
 )
