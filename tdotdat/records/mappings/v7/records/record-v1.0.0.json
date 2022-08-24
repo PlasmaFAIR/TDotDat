@@ -69,7 +69,7 @@
                                 "type": "keyword"
                             },
                             "name": {
-                                "type": "text"
+                                "type": "keyword"
                             },
                             "parameters": {
                                 "type": "text"
@@ -78,13 +78,13 @@
                                 "type": "keyword"
                             },
                             "version": {
-                                "type": "text"
+                                "type": "keyword"
                             }
                         },
                         "type": "object"
                     },
                     "name": {
-                        "type": "text"
+                        "type": "keyword"
                     },
                     "output_flag": {
                         "type": "boolean"
@@ -96,7 +96,7 @@
                         "type": "text"
                     },
                     "version": {
-                        "type": "text"
+                        "type": "keyword"
                     }
                 },
                 "type": "object"
