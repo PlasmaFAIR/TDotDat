@@ -35,7 +35,7 @@ jobs:
       MQ: ${{ matrix.mq-service }}
       SEARCH: elasticsearch7
       # TODO: Adapt EXTRAS accordingly
-      EXTRAS: all,postgresql,elasticsearch7
+      EXTRAS: all,postgresql,elasticsearch7,docs,tests
 
     steps:
       - name: Checkout
