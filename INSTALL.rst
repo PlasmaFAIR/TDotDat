@@ -124,3 +124,17 @@ In addition to the normal ``docker-compose.yml``, this one will start:
 - Flower (Celery monitoring) -- http://127.0.0.1:5555
 - Kibana (Elasticsearch inspection) -- http://127.0.0.1:5601
 - RabbitMQ (message queue) -- http://guest:guest@127.0.0.1:15672
+
+If you update any of the static files, including any of the React code
+(or anything else touched by `webpack`), then you'll need to make sure
+all the containers running off the `app` image get recreated in order
+to refresh the `static_data` volume:
+
+.. code-block:: console
+
+    $ export deps_ver=#latest version
+    $ docker-compose -f docker-compose.full.yml kill web-ui worker frontend
+    $ docker build --build-arg DEPENDENCIES_VERSION=$deps_ver . -t tdotdat
+    $ docker-compose -f docker-compose.full.yml up -d web-ui worker frontend
+
+You'll also need to remember to periodically prune dangling images.
