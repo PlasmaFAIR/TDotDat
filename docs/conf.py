@@ -7,7 +7,8 @@
 
 """Sphinx configuration."""
 
-from importlib.metadata import version as get_version
+from importlib.metadata import version as get_version, PackageNotFoundError
+
 
 # -- General configuration ------------------------------------------------
 
@@ -52,7 +53,13 @@ author = "TDoTP"
 # built documents.
 #
 # The full version, including alpha/beta/rc tags.
-release = get_version("tdotdat")
+try:
+    release = get_version("tdotdat")
+except PackageNotFoundError:
+    from setuptools_scm import get_version
+
+    release = get_version(root="..", relative_to=__file__)
+
 # The short X.Y version.
 version = ".".join(release.split(".")[:2])
 
