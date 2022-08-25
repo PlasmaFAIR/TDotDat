@@ -48,7 +48,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install ".[$EXTRAS]"
+          pip install ".[$EXTRAS]" docker-services-cli
           pip freeze
           docker --version
           docker-compose --version
