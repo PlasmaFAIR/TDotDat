@@ -26,17 +26,8 @@ jobs:
           # You can see the complete list of services and versions that are available at:
           # https://docker-services-cli.readthedocs.io/en/latest/configuration.html
           python-version: [3.8, 3.9]
-          requirements-level: [min, pypi]
           db-service: [postgresql11]
           search-service: [elasticsearch7]
-
-          exclude:
-          # Add combinations to this list that should be excluded from the final
-          # build. Doing this will help keeping the number of jobs down.
-          # E.g. removing 3.8 - min combination will avoid 8 jobs to be submited
-          # [3.8] * [min] * [postgresql9, postgresql11, mysql5, mysql8] * [elasticsearch6, elasticsearch7]
-          - python-version: 3.8
-            requirements-level: min
 
     env:
       CACHE: ${{ matrix.cache-service }}
@@ -55,20 +46,8 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Generate dependencies
-        run: |
-          python -m pip install --upgrade pip setuptools py wheel requirements-builder
-          requirements-builder -e "$EXTRAS" --level=${{ matrix.requirements-level }} setup.py > .${{ matrix.requirements-level }}-${{ matrix.python-version }}-requirements.txt
-
-      - name: Cache pip
-        uses: actions/cache@v2
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('.${{ matrix.requirements-level }}-${{ matrix.python-version }}-requirements.txt') }}
-
       - name: Install dependencies
         run: |
-          pip install -r .${{ matrix.requirements-level }}-${{ matrix.python-version }}-requirements.txt
           pip install ".[$EXTRAS]"
           pip freeze
           docker --version
