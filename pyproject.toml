@@ -9,3 +9,8 @@ build-backend = "setuptools.build_meta"
 [tool.setuptools_scm]
 write_to = "tdotdat/_version.py"
 git_describe_command = "git describe --dirty --tags --long --match v* --first-parent"
+
+[tool.pytest.ini_options]
+addopts = "--cov=tdotdat --cov-report=term-missing --ignore=setup.py"
+testpaths = "docs tests tdotdat"
+live_server_scope = "module"
