@@ -12,7 +12,6 @@ def prune(gk):
     """Remove the keys we're not (currently) interested in"""
 
     DROP_KEYS_CONTAINING = [
-        "b_field_parallel",
         "collisions_",
         "dr_minor_norm",
         "energy_",
