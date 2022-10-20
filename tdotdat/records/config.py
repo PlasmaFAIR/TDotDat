@@ -9,7 +9,7 @@
 
 from invenio_indexer.api import RecordIndexer
 from invenio_records_rest.facets import terms_filter
-from invenio_records_rest.utils import allow_all, check_elasticsearch, deny_all
+from invenio_records_rest.utils import allow_all, check_search, deny_all
 from invenio_search import RecordsSearch
 
 from tdotdat.records.api import Record
@@ -31,7 +31,6 @@ RECORDS_REST_ENDPOINTS = {
         search_class=RecordsSearch,
         indexer_class=RecordIndexer,
         search_index='records',
-        search_type=None,
         record_serializers={
             'application/json': ('tdotdat.records.serializers'
                                  ':json_v1_response'),
@@ -52,7 +51,7 @@ RECORDS_REST_ENDPOINTS = {
         max_result_window=10000,
         error_handlers=dict(),
         create_permission_factory_imp=authenticated_user_permission,
-        read_permission_factory_imp=check_elasticsearch,
+        read_permission_factory_imp=check_search,
         update_permission_factory_imp=authenticated_user_permission,
         delete_permission_factory_imp=deny_all,
         list_permission_factory_imp=allow_all,

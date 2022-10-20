@@ -1,5 +1,5 @@
 from invenio_indexer.api import RecordIndexer
-from invenio_records_rest.utils import allow_all, check_elasticsearch
+from invenio_records_rest.utils import allow_all, check_search
 from invenio_search import RecordsSearch
 
 from tdotdat.equilibrium.api import Equilibrium
@@ -20,7 +20,6 @@ RECORDS_REST_ENDPOINTS = {
         search_class=RecordsSearch,
         indexer_class=RecordIndexer,
         search_index="equilibrium",
-        search_type=None,
         record_serializers={
             "application/json": "tdotdat.equilibrium.serializers:json_v1_response",
         },
@@ -36,7 +35,7 @@ RECORDS_REST_ENDPOINTS = {
         max_result_window=10000,
         error_handlers=dict(),
         create_permission_factory_imp=allow_all,
-        read_permission_factory_imp=check_elasticsearch,
+        read_permission_factory_imp=check_search,
         update_permission_factory_imp=allow_all,
         delete_permission_factory_imp=allow_all,
         list_permission_factory_imp=allow_all,
