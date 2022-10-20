@@ -320,8 +320,10 @@ def omas_to_dataclasses(filename):
 
 
 METHODS = {
-    "jsonschema": omas_to_json_schema,
-    "elasticsearch": omas_to_elasticsearch_schema,
+    "jsonschema": lambda filename: json.dumps(omas_to_json_schema(filename)),
+    "elasticsearch": lambda filename: json.dumps(
+        omas_to_elasticsearch_schema(filename)
+    ),
     "marshmallow": omas_to_marshmallow,
     "dataclasses": omas_to_dataclasses,
 }
