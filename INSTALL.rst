@@ -13,7 +13,7 @@ the virtual environment creation for the project in order to sandbox our Python
 environment, as well as manage the dependency installation, among other things.
 
 Start all dependent services using docker-compose (this will start PostgreSQL,
-Elasticsearch 7, RabbitMQ and Redis):
+Opensearch 2, RabbitMQ and Redis):
 
 .. code-block:: console
 
@@ -23,7 +23,7 @@ Elasticsearch 7, RabbitMQ and Redis):
 
     Make sure you have `enough virtual memory
     <https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html#docker-cli-run-prod-mode>`_
-    for Elasticsearch in Docker:
+    for Opensearch in Docker:
 
     .. code-block:: shell
 
@@ -122,7 +122,7 @@ In addition to the normal ``docker-compose.yml``, this one will start:
 - UWSGI (application container)
 - Celery (background task worker)
 - Flower (Celery monitoring) -- http://127.0.0.1:5555
-- Kibana (Elasticsearch inspection) -- http://127.0.0.1:5601
+- Opensearch-dashboards (Opensearch inspection) -- http://127.0.0.1:5601
 - RabbitMQ (message queue) -- http://guest:guest@127.0.0.1:15672
 
 If you update any of the static files, including any of the React code
