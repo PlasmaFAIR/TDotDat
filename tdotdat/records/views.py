@@ -181,6 +181,7 @@ def create():
         tmpdir_path = pathlib.Path(tmpdir)
 
         def store_file(file_):
+            """Store file in bucket, make temporary symlink for Pyrokinetics"""
             file_storage = ObjectVersion.create(bucket, file_.filename, stream=file_)
 
             file_symlink = tmpdir_path / pathlib.Path(file_.filename).name
@@ -202,14 +203,11 @@ def create():
                 raise RuntimeError("Missing input file")
 
             keys = []
-            filenames = []
             for output_file in request.files.getlist(form.output_file.name):
-                key, filename = store_file(output_file)
+                key, _ = store_file(output_file)
                 keys.append(key)
-                filenames.append(filename)
 
-            # Load output from first filename
-            pyro.load_gk_output(filenames[0])
+            pyro.load_gk_output()
             data.update({"output_files": keys, **pyro.to_imas()})
 
     files = [
