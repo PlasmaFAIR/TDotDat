@@ -18,4 +18,5 @@ export FLASK_DEBUG=1
 
 # Build assets
 invenio collect -v
+# FIXME: make symlinks
 invenio webpack clean buildall
