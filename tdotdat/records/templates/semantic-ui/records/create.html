@@ -44,7 +44,9 @@
           <div class="ui message">
             {{ inputfor(form.software) }}
             {{ inputfor(form.input_file) }}
+            <div id="input_file-selectedFiles"></div>
             {{ inputfor(form.output_file) }}
+            <div id="output_file-selectedFiles"></div>
           </div>
 
           {{ form.csrf_token }}
@@ -59,4 +61,5 @@
 {%- block javascript %}
   {{ super() }}
   {{ webpack["tdotdat-deposit-app.js"] }}
+  {{ webpack["tdotdat-selected-files.js"] }}
 {%- endblock javascript %}

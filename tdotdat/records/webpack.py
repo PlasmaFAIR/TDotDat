@@ -20,6 +20,7 @@ search_app = WebpackThemeBundle(
                 "tdotdat-search-app": "./js/tdotdat_records/index.js",
                 "tdotdat-deposit-app": "./js/tdotdat_records/deposit/index.js",
                 "tdotdat-plot-app": "./js/tdotdat_records/plot/index.js",
+                "tdotdat-selected-files": "./js/tdotdat_records/display_selected_files.js",
             },
             dependencies={
                 "react": "^16.9.0",
