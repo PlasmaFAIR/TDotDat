@@ -13,4 +13,4 @@ class RecordForm(FlaskForm):
     converged = BooleanField("Is simulation converged?")
 
     input_file = FileField("Input file", [validators.DataRequired()])
-    output_file = FileField("Output file")
+    output_file = FileField("Output file(s)", render_kw={"multiple": True})

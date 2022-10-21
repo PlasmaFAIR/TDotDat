@@ -12,6 +12,8 @@ from os.path import splitext
 import json
 from io import BytesIO
 import copy
+import pathlib
+import tempfile
 
 from flask import (
     Blueprint,
@@ -161,64 +163,77 @@ def record_view(pid, record, template=None, **kwargs):
 @login_required
 def create():
     form = RecordForm()
-    if form.validate_on_submit():
-        contributors = [dict(name=form.contributor_name.data)]
+    if not form.validate_on_submit():
+        return render_template("records/create.html", form=form)
 
-        bucket = Bucket.create()
+    contributors = [dict(name=form.contributor_name.data)]
+    bucket = Bucket.create()
+    data = {}
+    pyro = None
 
-        data = {}
-        pyro = None
+    # We have a small problem: Pyrokinetics (currently) might rely on the actual
+    # filenames of GK input/output files (for at least some GK codes). But the
+    # uploaded files will be stored on disk with names like "<hash>/data". So,
+    # we create a temporary directory, and we create symlinks there with the
+    # actual filenames of the uploaded files (just the filename part, not the
+    # full path). The tempdir gets cleaned up automatically
+    with tempfile.TemporaryDirectory() as tmpdir:
+        tmpdir_path = pathlib.Path(tmpdir)
 
-        # TODO: this bit is copy-pasted from the upload script. This
-        # functionality should be in pyrokinetics itself
+        def store_file(file_):
+            file_storage = ObjectVersion.create(bucket, file_.filename, stream=file_)
+
+            file_symlink = tmpdir_path / pathlib.Path(file_.filename).name
+            file_symlink.symlink_to(file_storage.file.storage().fileurl)
+            return file_storage.key, file_symlink
 
         if form.input_file.data:
             input_file = request.files[form.input_file.name]
-            in_file = ObjectVersion.create(
-                bucket, input_file.filename, stream=input_file
-            )
+            input_key, input_symlink = store_file(input_file)
 
             # Note this relies on details of the file storage to get the filename
-            pyro = pyrokinetics.Pyro(gk_file=in_file.file.storage().fileurl)
-            data.update({"input_files": [in_file.key], **pyro.to_imas()})
+            pyro = pyrokinetics.Pyro(gk_file=input_symlink)
+            data.update({"input_files": [input_key], **pyro.to_imas()})
         else:
             data.update({"software": {"name": form.software.data}})
 
         if form.output_file.data:
-            output_file = request.files[form.output_file.name]
-            out_file = ObjectVersion.create(
-                bucket, output_file.filename, stream=output_file
-            )
-
             if pyro is None:
                 raise RuntimeError("Missing input file")
 
-            pyro.load_gk_output(out_file.file.storage().fileurl)
-            data.update({"output_files": [out_file.key], **pyro.to_imas()})
+            keys = []
+            filenames = []
+            for output_file in request.files.getlist(form.output_file.name):
+                key, filename = store_file(output_file)
+                keys.append(key)
+                filenames.append(filename)
 
-        files = [
-            dict(
-                key=f.key,
-                file_id=str(f.file_id),
-                bucket=str(bucket.id),
-                size=f.file.size,
-                checksum=f.file.checksum,
-                version_id=str(f.version_id),
-            )
-            for f in ObjectVersion.get_by_bucket(bucket.id)
-        ]
+            # Load output from first filename
+            pyro.load_gk_output(filenames[0])
+            data.update({"output_files": keys, **pyro.to_imas()})
 
-        create_record(
-            dict(
-                title=form.title.data,
-                contributors=contributors,
-                _bucket=str(bucket.id),
-                _files=files,
-                **data,
-            )
+    files = [
+        dict(
+            key=f.key,
+            file_id=str(f.file_id),
+            bucket=str(bucket.id),
+            size=f.file.size,
+            checksum=f.file.checksum,
+            version_id=str(f.version_id),
         )
-        return redirect(url_for("tdotdat_records.success"))
-    return render_template("records/create.html", form=form)
+        for f in ObjectVersion.get_by_bucket(bucket.id)
+    ]
+
+    create_record(
+        dict(
+            title=form.title.data,
+            contributors=contributors,
+            _bucket=str(bucket.id),
+            _files=files,
+            **data,
+        )
+    )
+    return redirect(url_for("tdotdat_records.success"))
 
 
 @blueprint.route("/success")
