@@ -14,6 +14,8 @@ from invenio_app.factory import create_api
 from invenio_files_rest.models import Location
 from invenio_records_rest.utils import allow_all
 
+from tdotdat.records.config import RECORDS_REST_ENDPOINTS
+
 
 @pytest.fixture(scope='module')
 def app_config(app_config):
@@ -25,6 +27,10 @@ def app_config(app_config):
     }
     app_config['FILES_REST_PERMISSION_FACTORY'] = allow_all
     app_config['CELERY_ALWAYS_EAGER'] = True
+    RECORDS_REST_ENDPOINTS["recid"]["create_permission_factory_imp"] = allow_all
+    RECORDS_REST_ENDPOINTS["recid"]["update_permission_factory_imp"] = allow_all
+    RECORDS_REST_ENDPOINTS["recid"]["delete_permission_factory_imp"] = allow_all
+    RECORDS_REST_ENDPOINTS["recid"]["read_permission_factory_imp"] = allow_all
     return app_config
 
 
