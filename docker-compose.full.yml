@@ -68,7 +68,7 @@ services:
       - log_data:/opt/invenio/var/instance/logs
     links:
       - cache
-      - es
+      - search
       - mq
       - db
   # API Rest Application
@@ -86,7 +86,7 @@ services:
       - log_data:/opt/invenio/var/instance/logs
     links:
       - cache
-      - es
+      - search
       - mq
       - db
   # Worker
@@ -99,7 +99,7 @@ services:
     image: tdotdat
     links:
       - cache
-      - es
+      - search
       - mq
       - db
     volumes:
