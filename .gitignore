@@ -66,3 +66,7 @@ target/
 
 # Generated version file
 tdotdat/_version.py
+
+# Certificates
+*.pem
+*.key
