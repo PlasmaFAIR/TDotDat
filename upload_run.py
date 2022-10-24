@@ -5,6 +5,7 @@ import pathlib
 import requests
 import json
 from urllib.parse import urljoin
+from typing import List
 
 import pyrokinetics
 
@@ -17,7 +18,13 @@ def read(filename: pathlib.Path) -> pyrokinetics.Pyro:
 
 
 def upload(
-    filename, data, server="https://localhost:5000", endpoint="api/records", token=None
+    input_file: pathlib.Path,
+    data: dict,
+    outputs: List[pathlib.Path],
+    server="https://localhost:5000",
+    endpoint="api/records",
+    token=None,
+    quiet=False,
 ):
 
     url = urljoin(server, endpoint)
@@ -32,22 +39,38 @@ def upload(
         )
 
     result_json = r.json()
+    new_id = r.json()["id"]
+    result_json["files"] = []
 
-    with open(filename) as f:
-        new_id = r.json()["id"]
+    if not quiet:
+        print(f"Created new record with ID: {new_id}")
+
+    for filename in [input_file] + outputs:
         file_url = f"{url}/{new_id}/files/{filename.name}"
-        r = requests.put(file_url, data=f, verify=verify, headers=header)
 
-    if not r.ok:
-        raise RuntimeError(f"Server error on file upload ({r.status_code}): {r.json()}")
+        with open(filename, "rb") as f:
+            r = requests.put(file_url, data=f, verify=verify, headers=header)
 
-    result_json["files"] = r.json()
+        if not r.ok:
+            raise RuntimeError(
+                f"Server error on file upload ({r.status_code}): {r.json()}"
+            )
+
+        result_json["files"].append(r.json())
+
     return result_json
 
 
 def run():
     parser = argparse.ArgumentParser("Upload simulation to TDoTDat")
     parser.add_argument("filename", help="Name of input file", type=pathlib.Path)
+    parser.add_argument(
+        "--outputs",
+        help="Name of output file(s)",
+        type=pathlib.Path,
+        nargs="+",
+        default=[],
+    )
     parser.add_argument(
         "--contributors",
         default=None,
@@ -83,7 +106,14 @@ def run():
     data["title"] = args.title or args.filename.name
     data["converged"] = not args.unconverged
 
-    result_json = upload(args.filename, data, server=args.server, token=args.token)
+    result_json = upload(
+        args.filename,
+        data,
+        args.outputs,
+        server=args.server,
+        token=args.token,
+        quiet=args.quiet,
+    )
 
     if not args.quiet:
         print(json.dumps(result_json))
